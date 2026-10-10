@@ -25,6 +25,7 @@ a.card:hover{box-shadow:0 4px 14px rgba(59,50,34,.2)}
 a.card:focus-visible{outline:3px solid var(--poppy);outline-offset:2px}
 .card .ic{flex:0 0 52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:28px;background:#f3e6d6}
 .card.sim{border-left-color:var(--poppy)} .card.sim .ic{background:#fde4e1}
+.card.tl{border-left-color:#7048e8} .card.tl .ic{background:#ece5fd}
 .card h2{margin:0 0 4px;font-size:18px;color:var(--bar)}
 .card p{margin:0;font-size:13.5px;line-height:1.4;color:#555}
 .card .go{margin-left:auto;font-size:22px;color:var(--accent);flex:0 0 auto}
@@ -58,7 +59,7 @@ footer a{color:var(--accent)}
   <p class="sub">Weekend 16–18 oktober 2026</p>
 </header>
 <main>
-  <p class="intro">Twee kaarten over de Eerste Wereldoorlog rond Ieper, voor onderweg op je telefoon. Kies waar je wilt beginnen.</p>
+  <p class="intro">Kaarten en een tijdlijn over de Eerste Wereldoorlog rond Ieper, voor onderweg op je telefoon. Kies waar je wilt beginnen.</p>
   <nav aria-label="Menu">
     <a class="card" id="m-kaart" href="kaart.html">
       <div class="ic" aria-hidden="true">🗺️</div>
@@ -68,6 +69,11 @@ footer a{color:var(--accent)}
     <a class="card sim" id="m-sim" href="simulatie.html">
       <div class="ic" aria-hidden="true">▶️</div>
       <div><h2>Simulatie 1914–1918</h2><p>De Ieperboog in acht stappen: van 1914 via de gasaanval, de mijnen van Mesen en Passendale tot de bevrijding in 1918.</p></div>
+      <div class="go" aria-hidden="true">›</div>
+    </a>
+    <a class="card tl" id="m-tl" href="tijdlijn.html">
+      <div class="ic" aria-hidden="true">📜</div>
+      <div><h2>Tijdlijn</h2><p>Ruim 50 momenten, van de Duitse inval in 1914 tot de Last Post van vandaag, met bronnen en links naar kaart en simulatie.</p></div>
       <div class="go" aria-hidden="true">›</div>
     </a>
     <div class="card soon" id="m-prog" aria-disabled="true">
