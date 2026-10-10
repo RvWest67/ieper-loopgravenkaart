@@ -17,6 +17,7 @@ body{display:flex;flex-direction:column;height:100dvh;height:100vh}
 #topbar h1{font-size:15px;margin:0;flex:1;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #topbar h1 small{display:block;font-weight:400;font-size:11px;opacity:.8}
 .tbtn{background:#fff;color:var(--bar);border:0;border-radius:18px;padding:7px 11px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;text-decoration:none;display:inline-block}
+.tbtn.home{padding:7px 9px}
 #main{flex:1 1 auto;display:flex;flex-direction:column;min-height:0;position:relative}
 #map{flex:1 1 auto;min-height:0}
 #card{flex:0 0 auto;max-height:46%;overflow:auto;background:var(--bg);box-shadow:0 -3px 12px rgba(0,0,0,.2);padding:8px 12px calc(10px + env(safe-area-inset-bottom));z-index:1000;transition:max-height .25s}
@@ -80,8 +81,9 @@ h4{margin:10px 0 2px;font-size:12px;text-transform:uppercase;letter-spacing:.04e
 </head>
 <body>
 <div id="topbar">
-  <h1>Simulatie Ieperboog 1914–1918<small>Tijdlijn van het front, stap voor stap</small></h1>
-  <a class="tbtn" href="index.html" title="Naar de loopgravenkaart">🗺 Kaart</a>
+  <a class="tbtn home" href="index.html" title="Naar het startmenu" aria-label="Home / menu">🏠</a>
+  <h1>Simulatie 1914–1918<small>Ieperboog, stap voor stap</small></h1>
+  <a class="tbtn" id="kaartBtn" href="kaart.html" title="Naar de loopgravenkaart">🗺 Kaart</a>
   <button class="tbtn" id="btnInfo" aria-label="Bronnen en info">ⓘ</button>
 </div>
 <div id="main">
@@ -185,7 +187,7 @@ POIS.forEach(p=>{
   const icon=L.divIcon({className:'',iconSize:[26,26],iconAnchor:[13,26],popupAnchor:[0,-24],html:'<div class="pin" style="background:'+cat.color+'"></div>'});
   const nav='https://www.google.com/maps/dir/?api=1&destination='+p.lat+','+p.lng;
   const html='<div class="pop"><h3>'+esc(p.naam)+'</h3><span class="badge" style="background:'+cat.color+'">'+cat.label+'</span><p>'+esc(p.gesch)+'</p><p><b>Nu te zien:</b> '+esc(p.nu)+'</p><p><b>Praktisch (okt. 2026):</b> '+esc(p.prak)+'</p>'+
-    '<div class="btns"><a href="'+nav+'" target="_blank" rel="noopener">🧭 Navigeer</a><a class="sec" href="index.html#'+p.lat+','+p.lng+',16">Op loopgravenkaart</a></div></div>';
+    '<div class="btns"><a href="'+nav+'" target="_blank" rel="noopener">🧭 Navigeer</a><a class="sec" href="kaart.html#'+p.lat+','+p.lng+',16">Op loopgravenkaart</a></div></div>';
   poiMarkers[p.id]=L.marker([p.lat,p.lng],{icon,title:p.naam,opacity:.85}).bindPopup(html,{maxWidth:300}).addTo(poiLayer);
 });
 
