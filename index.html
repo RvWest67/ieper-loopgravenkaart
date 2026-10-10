@@ -51,6 +51,7 @@ input[type=range]{width:100%}
 #info ul{padding-left:18px;margin:4px 0}
 #toast{position:absolute;z-index:1500;left:50%;top:64px;transform:translateX(-50%);background:rgba(0,0,0,.8);color:#fff;padding:7px 12px;border-radius:8px;font-size:13px;display:none;max-width:90%;text-align:center}
 .leaflet-top{top:52px}
+#simBtn{position:absolute;z-index:1000;left:10px;bottom:calc(34px + env(safe-area-inset-bottom));background:#8b5a2b;color:#fff;text-decoration:none;font-weight:700;font-size:13.5px;padding:9px 13px;border-radius:20px;box-shadow:0 2px 8px rgba(0,0,0,.35)}
 .lf-hint{background:rgba(255,255,255,.9);padding:3px 7px;border-radius:6px;font-size:12px}
 </style>
 </head>
@@ -63,6 +64,7 @@ input[type=range]{width:100%}
   <button class="tbtn" id="btnInfo" aria-label="Info">ⓘ</button>
 </div>
 <div id="toast"></div>
+<a id="simBtn" href="simulatie.html">▶ Simulatie 1914–1918</a>
 
 <div id="panel" class="hidden">
   <h2>Achtergrond</h2>
@@ -91,6 +93,7 @@ input[type=range]{width:100%}
 
 <div id="info"><div class="box">
   <div style="display:flex;justify-content:space-between;align-items:center"><strong style="font-size:16px">Over deze kaart</strong><button class="tbtn" style="background:#eee" id="infoClose">Sluiten ✕</button></div>
+  <p><a href="simulatie.html"><b>▶ Bekijk ook de simulatie 1914–1918</b></a>: een tijdlijn in acht stappen met frontlijnen, gasaanval, mijnen en bevrijding.</p>
   <p>Gemaakt voor het weekend in Ieper van 16–18 oktober 2026. Werkt in de browser van je telefoon; voor ‘Mijn locatie’ moet je locatietoegang geven (werkt het best als de kaart via https wordt geopend).</p>
   <h3>Historische lagen en bronnen</h3>
   <ul>
