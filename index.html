@@ -51,6 +51,20 @@ blockquote cite{display:block;font-style:normal;font-size:11.5px;color:#777;marg
 .offl summary{font-weight:700;cursor:pointer;color:var(--bar)}
 .offl ol{margin:4px 0;padding-left:20px;font-size:13.5px}
 .offl h3{font-size:14px;margin:8px 0 2px}
+.card.wjd{border-left-color:#e67700} .card.wjd .ic{background:#fff0db}
+.share{margin:4px 0 14px;background:#fff;border:1px solid #e4d9c6;border-left:5px solid #e67700;border-radius:12px;padding:11px 14px;font-size:14px;line-height:1.5}
+.share h2{margin:0 0 6px;font-size:17px;color:var(--bar)}
+.shrow{display:flex;gap:14px;align-items:center}
+.qrb{flex:0 0 auto;border:0;padding:6px;background:#fff;border-radius:10px;box-shadow:0 1px 5px rgba(59,50,34,.18);cursor:zoom-in;line-height:0}
+.qrb img{width:112px;height:112px;display:block;image-rendering:pixelated}
+.shtx p{margin:0 0 6px;font-size:13.5px;color:#555}
+.url{font-size:12.5px;word-break:break-all;color:var(--accent);font-weight:600}
+#shstat{font-size:13px;color:#2b8a3e;font-weight:600;min-height:1.2em}
+#shstat.err{color:#a51111}
+#qrov{position:fixed;inset:0;z-index:100;background:rgba(30,24,15,.85);display:none;align-items:center;justify-content:center;flex-direction:column;padding:18px;cursor:zoom-out}
+#qrov.show{display:flex}
+#qrov img{width:min(86vw,72vh,520px);height:auto;background:#fff;padding:14px;border-radius:14px;image-rendering:pixelated}
+#qrov p{color:#fff;font-size:15px;text-align:center;margin:12px 0 0}
 footer{max-width:560px;margin:0 auto;padding:6px 16px calc(22px + env(safe-area-inset-bottom));font-size:12px;color:#6b6b6b;line-height:1.5;text-align:center}
 footer a{color:var(--accent)}
 @media(min-width:700px){h1{font-size:30px}header{padding-top:34px;padding-bottom:34px}}
@@ -135,7 +149,24 @@ footer a{color:var(--accent)}
       <div><h2>Dagprogramma’s</h2><p>Kant-en-klare dagen met de auto: Ieper, Passendale, de mijnen en Mesen, Poperinge of een regenprogramma. Met tijden, rijafstanden, lunchtips, kaartjes en een rustige variant.</p></div>
       <div class="go" aria-hidden="true">›</div>
     </a>
+    <a class="card wjd" id="m-wjd" href="wistjedat.html">
+      <div class="ic" aria-hidden="true">💡</div>
+      <div><h2>Wist je dat?</h2><p>35 verrassende weetjes om onderweg voor te lezen, van ‘Wipers’ tot de mijn die in 1955 door de bliksem ontplofte. Met bronnen en een knop voor een willekeurig weetje.</p></div>
+      <div class="go" aria-hidden="true">›</div>
+    </a>
   </nav>
+  <section class="share" id="delen" aria-labelledby="shh">
+    <h2 id="shh">🔗 Delen</h2>
+    <div class="shrow">
+      <button class="qrb" id="qrbtn" type="button" aria-label="QR-code vergroten"><img src="qr.svg" alt="QR-code naar deze gids" width="112" height="112"></button>
+      <div class="shtx">
+        <p>Laat een reisgenoot de QR-code scannen (tik om te vergroten) of deel de link.</p>
+        <button class="obtn" id="shbtn" type="button">📤 Deel deze gids</button>
+        <div class="url" id="shurl">rvwest67.github.io/ieper-loopgravenkaart/</div>
+        <div id="shstat" role="status" aria-live="polite"></div>
+      </div>
+    </div>
+  </section>
   <section class="offl" id="offline" aria-labelledby="offh">
     <h2 id="offh">📴 Offline gebruiken</h2>
     <p>In de velden rond Ieper is het mobiele bereik soms zwak. Deze gids werkt ook zonder internet. Druk thuis (met internet) één keer op de knop: dan worden alle pagina’s, de kaartgegevens (frontlijnen, loopgraven, plekken) en de KML op je toestel bewaard. Bij een gewoon bezoek gebeurt dat ook vanzelf.</p>
@@ -170,6 +201,25 @@ footer a{color:var(--accent)}
     if(navigator.storage&&navigator.storage.persist) navigator.storage.persist().catch(()=>{});
     ask({type:'precache'}).then(show).catch(()=>{ st.className='err'; st.textContent='Bewaren lukte niet. Controleer je verbinding en probeer opnieuw.'; }).finally(()=>{ btn.disabled=false; });
   });
+})();
+</script>
+<div id="qrov" role="dialog" aria-modal="true" aria-label="QR-code groot"><img src="qr.svg" alt="QR-code naar rvwest67.github.io/ieper-loopgravenkaart/"><p>Scan voor de gids · tik om te sluiten</p></div>
+<script>
+(function(){
+  const SITE='https://rvwest67.github.io/ieper-loopgravenkaart/', $=id=>document.getElementById(id), st=$('shstat'), ov=$('qrov');
+  $('qrbtn').onclick=()=>ov.classList.add('show');
+  ov.onclick=()=>ov.classList.remove('show');
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape') ov.classList.remove('show'); });
+  function msg(t,err){ st.className=err?'err':''; st.textContent=t; }
+  function copy(){
+    if(navigator.clipboard&&window.isSecureContext) return navigator.clipboard.writeText(SITE).then(()=>msg('✔ Link gekopieerd.'));
+    return new Promise((res,rej)=>{ const t=document.createElement('textarea'); t.value=SITE; t.setAttribute('readonly',''); t.style.position='fixed'; t.style.opacity='0'; document.body.appendChild(t); t.select();
+      let ok=false; try{ ok=document.execCommand('copy'); }catch(e){} t.remove(); ok?(msg('✔ Link gekopieerd.'),res()):rej(); });
+  }
+  $('shbtn').onclick=()=>{
+    if(navigator.share){ navigator.share({title:'Ieperboog 14–18',text:'Bezoekersgids Eerste Wereldoorlog rond Ieper',url:SITE}).catch(e=>{ if(e&&e.name==='AbortError') return; copy().catch(()=>msg('Kopiëren lukte niet. Houd de link hieronder ingedrukt om te kopiëren.',true)); }); return; }
+    copy().catch(()=>msg('Kopiëren lukte niet. Houd de link hieronder ingedrukt om te kopiëren.',true));
+  };
 })();
 </script>
 </body>
