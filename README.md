@@ -1,6 +1,6 @@
-# Ieperboog 14–18 · Weekend 16–18 oktober 2026
+# Ieperboog 14–18 · WOI-bezoekersgids
 
-WOI-website over de Ieperboog (Leaflet, Nederlandstalig, geschikt voor mobiel), gemaakt voor een weekend in Ieper (16–18 oktober 2026).
+Nederlandstalige WOI-bezoekersgids over de Ieperboog (Leaflet, geschikt voor mobiel): kaart, simulatie, tijdlijn, verhalen en woordenlijst voor wie de plekken rond Ieper bezoekt.
 
 **Startpagina:** https://rvwest67.github.io/ieper-loopgravenkaart/
 
@@ -8,15 +8,17 @@ WOI-website over de Ieperboog (Leaflet, Nederlandstalig, geschikt voor mobiel), 
 - **Simulatie 1914–1918:** https://rvwest67.github.io/ieper-loopgravenkaart/simulatie.html (een stap openen kan direct met `#stap1` t/m `#stap8`)
 - **Tijdlijn:** https://rvwest67.github.io/ieper-loopgravenkaart/tijdlijn.html (een moment openen kan direct met `#e-<datum>`, bijv. `#e-1917-06-07`; een jaar met `#j1917` of `#jna`)
 - **Verhalen:** https://rvwest67.github.io/ieper-loopgravenkaart/verhalen.html (een verhaal openen kan direct met `#<id>`, bijv. `#mccrae`; een plek met `#g-boezinge`)
+- **Begrippen & legers:** https://rvwest67.github.io/ieper-loopgravenkaart/begrippen.html (een begrip met `#t-<id>`, bijv. `#t-yperiet`; een leger met `#l-<id>`, bijv. `#l-nz`; een type begraafplaats met `#b-cwgc`, `#b-de`, `#b-fr`, `#b-be`)
 
 ## Bestanden
 
-- `index.html` – startpagina met keuzemenu: Loopgravenkaart, Simulatie 1914–1918, Tijdlijn, Verhalen en (binnenkort) Weekendprogramma. De klaproos is een eigen SVG-tekening; er staan geen afbeeldingen van derden op de pagina.
+- `index.html` – startpagina met keuzemenu: Loopgravenkaart, Simulatie 1914–1918, Tijdlijn, Verhalen, Begrippen & legers en (binnenkort) Voorbeeldroutes. De klaproos is een eigen SVG-tekening; er staan geen afbeeldingen van derden op de pagina.
 - `kaart.html` – de loopgravenkaart (één bestand; frontlijnen, loopgraven en plekken zitten erin, achtergrondkaarten en WOI-luchtfoto's worden live geladen). Een plek of uitsnede openen kan met `kaart.html#lat,lng,zoom`.
 - `simulatie.html` – geanimeerde tijdlijn van de Ieperboog in acht stappen (1914, gasaanval 22 april 1915, mei 1915, 1916, mijnen van Mesen 7 juni 1917, Passendale 1917, Leie-offensief april 1918, bevrijding vanaf 28 september 1918). Bevat frontlijnen uit de bron, pijlen, gaswolk en de 19 mijnkraters op hun echte plek, een korte uitleg met slachtofferaantallen en bronnen, en links naar de plekken die je nu kunt bezoeken. Pijlen, gaswolk en animaties zijn visualisaties. De lijn ‘na Mesen’ en de zone van het bevrijdingsoffensief (sept.–okt. 1918) zijn **benaderingen**; zie het ⓘ-paneel.
 - `tijdlijn.html` – chronologische tijdlijn in 56 momenten, van de Duitse inval (4 augustus 1914) via de vijf slagen om Ieper tot de wederopbouw, de Menenpoort, de Last Post en de herdenkingsjaren 2014–2018 en 2023–2025. Met springknoppen per jaar, een filter per soort (slagen; gas, mijnen en nieuwe wapens; herdenking en monumenten; Ieper en dagelijks leven), landenlabels (BE, GB, Commonwealth, FR, DE), bronnummers per item en ⚠️ bij onzekere of omstreden cijfers. 📍 opent de plek op de kaart, ▶ de stap in de simulatie; elke simulatiestap linkt terug naar de tijdlijn.
 - `verhalen.html` – 20 persoonlijke verhalen, gegroepeerd per plek (Boezinge, Sint-Juliaan en Langemark, Passendale, Ieper, Poperinge/Brandhoek/Lijssenthoek, Hill 60, Wijtschate/Mesen/Loker, Ploegsteert en verder weg Vladslo). Bij elk verhaal: 📍 Op de kaart, waar het past 📜 Tijdlijn en ▶ Simulatie, en de bronnen. ‘In Flanders Fields’ staat er volledig in (tekst van de uitgave van 1919, publiek domein) met een **eigen Nederlandse vertaling**. Citaten komen uit bronnen die publiek domein zijn; vertalingen zijn eigen vertalingen. ⚖️ markeert legendes en omstreden punten.
-- Navigatie: 🏠 op de kaart en in de simulatie gaat terug naar het menu. ‘▶ Simulatie 1914–1918’ op de kaart gaat naar de simulatie, ‘🗺 Kaart’ in de simulatie naar de kaart, en ‘Op loopgravenkaart’ bij een plek in de simulatie opent `kaart.html` op die plek. Het ⓘ-paneel van kaart en simulatie linkt naar de tijdlijn en de verhalen. Popups op de kaart hebben ‘📖 Verhaal’-links naar `verhalen.html#…` als er een verhaal bij die plek hoort. Opent de kaart via `#lat,lng,zoom`, dan staat er een rode cirkel op dat punt.
+- `begrippen.html` – drie delen: (1) een doorzoekbare woordenlijst A–Z met 49 begrippen (van ‘Ieperboog’, ‘sappe’ en ‘pillbox’ tot ‘yperiet’, ‘Blighty’, ‘Known unto God’ en ‘demarcatiepaal’), met links naar kaart, tijdlijn, simulatie en verhalen; (2) **Wie vocht er?**: 13 kaarten (Belgen, Britten, Canadezen, Australiërs, Nieuw-Zeelanders, Indiërs, Zuid-Afrikanen, Ieren, Newfoundlanders, Fransen, Duitsers, Chinese Labour Corps, Amerikanen) met wanneer en waar, een kernfeit en een plek om te bezoeken; (3) **Begraafplaatsen herkennen**: Commonwealth, Duits, Frans en Belgisch, met waar je op let en tips voor je bezoek (registerkastje, bezoekersboek, Last Post). Genummerde bronnen onderaan; ⚖️ bij onzekere of omstreden punten.
+- Navigatie: 🏠 op de kaart en in de simulatie gaat terug naar het menu. ‘▶ Simulatie 1914–1918’ op de kaart gaat naar de simulatie, ‘🗺 Kaart’ in de simulatie naar de kaart, en ‘Op loopgravenkaart’ bij een plek in de simulatie opent `kaart.html` op die plek. Het ⓘ-paneel van kaart en simulatie linkt naar de tijdlijn, de verhalen en de begrippen. Popups op de kaart hebben ‘📖 Verhaal’-links naar `verhalen.html#…` als er een verhaal bij die plek hoort. Opent de kaart via `#lat,lng,zoom`, dan staat er een rode cirkel op dat punt.
 - Lakenhalle (kaart, KML en tijdlijn): wederopbouw vanaf 1928 (eerst het belfort, 1928–1934) tot de inhuldiging op 4 november 1967, volgens de Inventaris Onroerend Erfgoed. Sommige bronnen (Engelstalige Wikipedia) noemen 1933 als start; dat staat er als onzeker bij.
 - `ww1-ieper.kml` – dezelfde 21 plekken, om te importeren in Google My Maps.
 
@@ -48,3 +50,7 @@ De 40 bronnen staan genummerd onderaan `tijdlijn.html`, met een link bij elk ite
 ## Bronnen verhalen
 
 Onder elk verhaal staan de bronnen (geraadpleegd op 10 oktober 2026). Vooral CWGC (graven en begraafplaatsen), Wikipedia (Engels, Nederlands en Duits), de Last Post Association, Talbot House, Inventaris Onroerend Erfgoed, Toerisme Poperinge, de Volksbund (over de Langemarck-mythe), 1914-1918-online, UCL (Christophe Declercq, over de Belgische vluchtelingen) en The Guardian (over de Birdcage-mijn). Omstreden punten staan in de tekst aangeduid: de datum van de Birdcage-explosie (17 juni of 17 juli 1955), het aantal executies in Poperinge, of er bij het kerstbestand werd gevoetbald, Valentine Strudwick als ‘jongste’ gesneuvelde, en wat Hitler in 1914 precies in de Ieperboog deed.
+
+## Bronnen begrippen & legers
+
+De 78 bronnen staan genummerd onderaan `begrippen.html` (geraadpleegd op 10 oktober 2026). Vooral Wikipedia (Engels, Nederlands en Duits), CWGC, de Volksbund, de Inventaris Onroerend Erfgoed (Saint-Charles de Potyze, Belgische militaire begraafplaatsen, Houthulst), Chemins de mémoire (Franse ossuarium Kemmelberg), de American Battle Monuments Commission (Kemmel American Monument), WO1.be en Toerisme Poperinge (Chinese site Busseboom), de South African Legion en de Last Post Association.
