@@ -19,6 +19,7 @@ body{display:flex;flex-direction:column;height:100dvh;height:100vh}
 #topbar h1 small{display:block;font-weight:400;font-size:11px;opacity:.8}
 .tbtn{background:#fff;color:var(--bar);border:0;border-radius:18px;padding:7px 11px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;text-decoration:none;display:inline-block}
 .tbtn.home{padding:7px 9px}
+.tlink{margin:10px 0 2px;font-size:13.5px}.tlink a{color:var(--accent);font-weight:700;text-decoration:none}
 #main{flex:1 1 auto;display:flex;flex-direction:column;min-height:0;position:relative}
 #map{flex:1 1 auto;min-height:0}
 #card{flex:0 0 auto;max-height:46%;overflow:auto;background:var(--bg);box-shadow:0 -3px 12px rgba(0,0,0,.2);padding:8px 12px calc(10px + env(safe-area-inset-bottom));z-index:1000;transition:max-height .25s}
@@ -107,6 +108,7 @@ h4{margin:10px 0 2px;font-size:12px;text-transform:uppercase;letter-spacing:.04e
 <div id="info"><div class="box">
   <div style="display:flex;justify-content:space-between;align-items:center"><strong style="font-size:16px">Over deze simulatie</strong><button class="tbtn" style="background:#eee" id="infoClose">Sluiten ✕</button></div>
   <p>De simulatie loopt in acht stappen door de oorlog in de Ieperboog. Elke stap toont de frontlijn uit de bron, met geanimeerde symbolen (pijlen, gaswolk, mijnontploffingen), een korte uitleg en de plekken die je nu kunt bezoeken. Met <b>🗺 Kaart</b> ga je naar de loopgravenkaart.</p>
+  <p><a href="tijdlijn.html"><b>📜 Tijdlijn</b></a>: het hele verhaal in ruim 50 momenten, van 1914 tot nu, met bronnen.</p>
   <h3>Wat is echt en wat is vereenvoudigd?</h3>
   <ul>
    <li><b>Echt (uit de bron):</b> de frontlijnen van nov. 1914, mei 1915, nov. 1917 en apr. 1918 (Provincie West-Vlaanderen), de plaatsen van de 19 mijnkraters (Wikipedia-lijst, naar Holt &amp; Holt), de loopgraven (UGent) en de WOI-luchtfoto’s.</li>
@@ -253,6 +255,7 @@ function swapFront(s){
     pf.style.opacity=1; pg.style.opacity=1;
   }, 350);
 }
+const TL=['1914-10-19','1915-04-22','1915-05-25','1916-03-27','1917-06-07','1917-07-31','1918-04-09','1918-09-28'];
 function go(i, fromPlay){
   idx=Math.max(0,Math.min(STEPS.length-1,i)); const s=STEPS[idx];
   if(!fromPlay) stop();
@@ -267,7 +270,8 @@ function go(i, fromPlay){
     '<div class="cas"><b>Slachtoffers (orde van grootte):</b> '+esc(s.slachtoffers)+'<div class="src">Bron: '+esc(s.bron)+'</div></div>'+
     '<h4>Op de kaart</h4><ul class="leg">'+s.legend.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>'+
     (s.simpl?'<div class="simpl"><b>Vereenvoudiging:</b> '+esc(s.simpl)+'</div>':'')+
-    '<h4>Nu te bezoeken</h4><div class="poichips">'+poiHtml+'</div>';
+    '<h4>Nu te bezoeken</h4><div class="poichips">'+poiHtml+'</div>'+
+    '<p class="tlink"><a id="tlLink" href="tijdlijn.html#e-'+TL[idx]+'">📜 Meer hierover in de tijdlijn ›</a></p>';
   document.querySelectorAll('[data-poi]').forEach(a=>a.onclick=e=>{ e.preventDefault(); stop(); const p=POIS.find(x=>x.id===a.dataset.poi);
     map.flyTo([p.lat,p.lng],15,{duration:1}); setTimeout(()=>poiMarkers[p.id].openPopup(),1100); });
   document.getElementById('visbadge').textContent = s.datum + (s.zone||s.front.extra?' · bevat benadering':'');
