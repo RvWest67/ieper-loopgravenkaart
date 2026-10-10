@@ -39,11 +39,40 @@ a.card:focus-visible{outline:3px solid var(--poppy);outline-offset:2px}
 .tag{display:inline-block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;background:#ddd;color:#555;border-radius:8px;padding:1px 7px;margin-left:6px;vertical-align:middle}
 blockquote{margin:6px 4px 14px;padding:10px 14px;border-left:3px solid var(--poppy);background:#fbf5ee;font-style:italic;font-size:13.5px;line-height:1.45;color:#4a3f2c}
 blockquote cite{display:block;font-style:normal;font-size:11.5px;color:#777;margin-top:4px}
+.offl{margin:4px 0 14px;background:#fff;border:1px solid #e4d9c6;border-left:5px solid #495057;border-radius:12px;padding:11px 14px;font-size:14px;line-height:1.5}
+.offl h2{margin:0 0 4px;font-size:17px;color:var(--bar)}
+.offl p{margin:5px 0}
+.obtn{display:inline-block;background:var(--bar);color:#fff;border:0;border-radius:18px;padding:9px 15px;font-size:14px;font-weight:700;cursor:pointer;margin:4px 0}
+.obtn:disabled{opacity:.6;cursor:default}
+#offstat{font-size:13px;color:#2b8a3e;font-weight:600;min-height:1.2em}
+#offstat.err{color:#a51111}
+.otip{font-size:13px;background:#fff9db;border-radius:9px;padding:7px 10px}
+.offl details{margin-top:8px;border-top:1px solid #eee;padding-top:6px}
+.offl summary{font-weight:700;cursor:pointer;color:var(--bar)}
+.offl ol{margin:4px 0;padding-left:20px;font-size:13.5px}
+.offl h3{font-size:14px;margin:8px 0 2px}
 footer{max-width:560px;margin:0 auto;padding:6px 16px calc(22px + env(safe-area-inset-bottom));font-size:12px;color:#6b6b6b;line-height:1.5;text-align:center}
 footer a{color:var(--accent)}
 @media(min-width:700px){h1{font-size:30px}header{padding-top:34px;padding-bottom:34px}}
 @media (prefers-reduced-motion: reduce){.card{transition:none}}
 </style>
+<!--pwa-->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Ieperboog 14–18"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>#offtoast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom));z-index:2000;max-width:min(92vw,520px);background:#212529;color:#fff;font:13px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;border-radius:12px;padding:9px 34px 9px 12px;box-shadow:0 3px 12px rgba(0,0,0,.35)}#offtoast button{position:absolute;right:6px;top:5px;background:none;border:0;color:#fff;font-size:18px;cursor:pointer}</style>
+<script>
+(function(){
+  if('serviceWorker' in navigator && (location.protocol==='https:'||/^(localhost|127\.0\.0\.1)$/.test(location.hostname))) addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+  function toast(on){ let t=document.getElementById('offtoast');
+    if(!on){ if(t) t.remove(); return; } if(t||!document.body) return;
+    t=document.createElement('div'); t.id='offtoast'; t.setAttribute('role','status');
+    t.innerHTML='📴 <b>Offline</b>: je bekijkt de bewaarde versie.'+(document.getElementById('map')||window.L?' Kaarttegels die je eerder bekeek, blijven zichtbaar; luchtfoto’s en erfgoedlagen hebben internet nodig.':'')+'<button type="button" aria-label="Sluiten">×</button>';
+    t.querySelector('button').onclick=()=>t.remove(); document.body.appendChild(t); }
+  addEventListener('offline',()=>toast(true)); addEventListener('online',()=>toast(false));
+  document.addEventListener('DOMContentLoaded',()=>{ if(navigator.onLine===false) toast(true); });
+})();
+</script>
+<!--/pwa-->
 </head>
 <body>
 <header>
@@ -107,11 +136,41 @@ footer a{color:var(--accent)}
       <div class="go" aria-hidden="true">›</div>
     </a>
   </nav>
+  <section class="offl" id="offline" aria-labelledby="offh">
+    <h2 id="offh">📴 Offline gebruiken</h2>
+    <p>In de velden rond Ieper is het mobiele bereik soms zwak. Deze gids werkt ook zonder internet. Druk thuis (met internet) één keer op de knop: dan worden alle pagina’s, de kaartgegevens (frontlijnen, loopgraven, plekken) en de KML op je toestel bewaard. Bij een gewoon bezoek gebeurt dat ook vanzelf.</p>
+    <button class="obtn" id="offbtn" type="button">⬇️ Offline klaarzetten</button>
+    <div id="offstat" role="status" aria-live="polite"></div>
+    <p class="otip"><b>Tip:</b> open de kaart thuis op wifi en zoom in op de gebieden die je wilt bezoeken. Alleen kaarttegels die je zelf bekeken hebt, worden bewaard (maximaal 500). De site downloadt geen hele gebieden vooraf: dat verbieden de gebruiksregels van OpenStreetMap. De luchtfoto’s (WOI en hedendaags) en de erfgoedlagen werken alleen met internet.</p>
+    <details>
+      <summary>📲 Zet op beginscherm</summary>
+      <h3>iPhone en iPad (Safari)</h3>
+      <ol><li>Open deze site in Safari.</li><li>Tik op de deelknop (vierkantje met pijl omhoog).</li><li>Kies <b>Zet op beginscherm</b> en tik op <b>Voeg toe</b>.</li></ol>
+      <h3>Android (Chrome)</h3>
+      <ol><li>Open deze site in Chrome.</li><li>Tik op het menu <b>⋮</b> rechtsboven.</li><li>Kies <b>App installeren</b> of <b>Toevoegen aan startscherm</b> en bevestig.</li></ol>
+      <p>De gids opent dan als een app, zonder adresbalk. Menu’s kunnen per versie iets anders heten.</p>
+    </details>
+  </section>
   <blockquote>“In Flanders fields the poppies blow / Between the crosses, row on row”<cite>John McCrae, mei 1915, geschreven bij Essex Farm (Boezinge)</cite></blockquote>
 </main>
 <footer>
   Lijnen en zones zijn benaderingen waar dat zo staat aangegeven; pijlen en animaties zijn visualisaties.<br>
   <a href="https://github.com/RvWest67/ieper-loopgravenkaart#readme">Bronnen en licenties</a> · Kaartdata © OpenStreetMap-bijdragers, Provincie West-Vlaanderen, Onroerend Erfgoed
 </footer>
+<script>
+(function(){
+  const btn=document.getElementById('offbtn'), st=document.getElementById('offstat');
+  const ok='serviceWorker' in navigator && 'caches' in window && (location.protocol==='https:'||/^(localhost|127\.0\.0\.1)$/.test(location.hostname));
+  function ask(msg){ return navigator.serviceWorker.ready.then(reg=>new Promise((res,rej)=>{ const ch=new MessageChannel(); ch.port1.onmessage=e=>res(e.data); (reg.active||navigator.serviceWorker.controller).postMessage(msg,[ch.port2]); setTimeout(()=>rej(new Error('timeout')),60000); })); }
+  function show(d){ st.className=''; st.textContent=(d.n===d.total?'✔ Klaar voor offline: ':'Deels bewaard: ')+d.n+' van '+d.total+' bestanden'+(d.tiles?' · '+d.tiles+' kaarttegels bewaard':'')+'.'; }
+  if(!ok){ btn.disabled=true; st.className='err'; st.textContent='Offline klaarzetten werkt alleen op de online site in een moderne browser.'; return; }
+  ask({type:'status'}).then(d=>{ if(d&&d.n) show(d); }).catch(()=>{});
+  btn.addEventListener('click',()=>{
+    btn.disabled=true; st.className=''; st.textContent='Bezig met bewaren…';
+    if(navigator.storage&&navigator.storage.persist) navigator.storage.persist().catch(()=>{});
+    ask({type:'precache'}).then(show).catch(()=>{ st.className='err'; st.textContent='Bewaren lukte niet. Controleer je verbinding en probeer opnieuw.'; }).finally(()=>{ btn.disabled=false; });
+  });
+})();
+</script>
 </body>
 </html>
