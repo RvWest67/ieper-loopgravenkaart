@@ -55,6 +55,28 @@ body{display:flex;flex-direction:column;height:100vh}
 #more{flex:1 1 auto;overflow:auto;padding:0 14px 12px;display:none;-webkit-overflow-scrolling:touch}
 #sheet.open #more{display:block}
 #sheet.open{height:min(64%,560px)}
+#chev{position:absolute;right:12px;top:0;height:100%;display:flex;align-items:center;gap:4px;font-size:12px;font-weight:700;color:var(--accent)}
+#chev b{font-size:15px;line-height:1}
+#grab:focus-visible{outline:3px solid var(--accent);outline-offset:-3px}
+/* telefoon: tekst boven, compacte bedieningsstrook altijd zichtbaar onderaan */
+@media(max-width:899px){
+ #grab{order:1;height:26px}
+ #head{order:2}
+ #more{order:3}
+ #strip{order:4;border-top:1px solid #e4d9c6;padding-top:5px;background:var(--bg)}
+ #ystrip{display:flex;align-items:center;gap:6px;padding:0 10px 2px}
+ #years{flex:0 0 auto;padding:0;gap:3px}
+ #years button{flex:0 0 auto;width:42px;height:30px;font-size:12px;border-radius:8px}
+ #slider{flex:1 1 auto;min-width:70px;width:auto;margin:0;height:28px}
+ #ctrl{padding:3px 10px 5px;gap:5px}
+ .cb{height:42px;min-width:42px}
+ .cb.main{min-width:52px}
+ #sheet.s-min #head{display:flex;align-items:baseline;gap:7px;padding:0 14px 6px;white-space:nowrap;overflow:hidden;cursor:pointer}
+ #sheet.s-min #date{font-size:14px;flex:0 0 auto}
+ #sheet.s-min #title{font-size:14px;margin:0;overflow:hidden;text-overflow:ellipsis;flex:1 1 auto;min-width:0}
+ #sheet.s-min #kort,#sheet.s-min #morebtn{display:none}
+}
+@media(max-width:360px){#years button{width:38px}#count{font-size:11px}}
 .txt{font-size:14px;line-height:1.5;margin:6px 0}
 .cas{font-size:13px;background:#f6f1e7;border-left:3px solid var(--accent);padding:6px 8px;margin:8px 0}
 .src{font-size:11.5px;color:#666}
@@ -141,7 +163,8 @@ h4{margin:12px 0 2px;font-size:12px;text-transform:uppercase;letter-spacing:.04e
   <div id="flash"></div>
   <div id="legend" aria-label="Legenda"></div>
   <div id="sheet" aria-label="Verhaal en bediening">
-    <div id="grab" title="Sleep omhoog of omlaag"><div class="handle"></div><div id="prog"><div id="progbar"></div></div></div>
+    <div id="grab" role="button" tabindex="0" aria-controls="head" aria-expanded="false" title="Tik of sleep: verhaal tonen of verbergen"><div class="handle"></div><span id="chev"><span id="chevt">Verhaal</span> <b id="chevb">▴</b></span><div id="prog"><div id="progbar"></div></div></div>
+    <div id="strip">
     <div id="ctrl">
       <button class="cb" id="prev" aria-label="Vorige fase">◀</button>
       <button class="cb main" id="play" aria-label="Afspelen">▶</button>
@@ -150,8 +173,9 @@ h4{margin:12px 0 2px;font-size:12px;text-transform:uppercase;letter-spacing:.04e
       <button class="cb" id="snd" aria-pressed="false" aria-label="Geluid aan of uit" title="Geluid (staat uit)">🔇</button>
       <button class="cb" id="legbtn" aria-pressed="false" aria-label="Legenda tonen" title="Legenda">🔑</button>
     </div>
-    <div id="years"></div>
-    <input type="range" id="slider" min="0" max="1" step="1" value="0" aria-label="Fase in de tijd">
+    <div id="ystrip"><div id="years"></div>
+    <input type="range" id="slider" min="0" max="1" step="1" value="0" aria-label="Fase in de tijd"></div>
+    </div>
     <div id="head">
       <p id="date"></p><div id="title"></div><p id="kort"></p>
       <button id="morebtn" aria-expanded="false">Lees meer ▴</button>
@@ -162,7 +186,7 @@ h4{margin:12px 0 2px;font-size:12px;text-transform:uppercase;letter-spacing:.04e
 
 <div id="info"><div class="box">
   <div style="display:flex;justify-content:space-between;align-items:center"><strong style="font-size:16px">Over deze simulatie</strong><button class="tbtn" style="background:#eee" id="infoClose">Sluiten ✕</button></div>
-  <p>De simulatie loopt in 22 fasen door de oorlog in de Ieperboog, van oktober 1914 tot de wapenstilstand. Druk op <b>▶</b> om alles automatisch af te spelen, of blader met <b>◀ ▶▏</b>, de jaartallen of de schuifbalk. Veeg over het verhaal opzij voor de vorige of volgende fase, en sleep het omhoog om meer te lezen. <b>🔑</b> toont de legenda, <b>🔇</b> zet een zacht geluid aan (staat standaard uit). Met <b>🗺 Kaart</b> ga je naar de loopgravenkaart.</p>
+  <p>De simulatie loopt in 22 fasen door de oorlog in de Ieperboog, van oktober 1914 tot de wapenstilstand. Druk op <b>▶</b> om alles automatisch af te spelen, of blader met <b>◀ ▶▏</b>, de jaartallen of de schuifbalk. Veeg over het verhaal of de knoppenbalk opzij voor de vorige of volgende fase. Tik op het greepje (▴/▾) of sleep omhoog en omlaag om het verhaal te tonen, uit te breiden of in te klappen; je keuze wordt onthouden. <b>🔑</b> toont de legenda, <b>🔇</b> zet een zacht geluid aan (staat standaard uit). Met <b>🗺 Kaart</b> ga je naar de loopgravenkaart.</p>
   <p>Wie liever geen beweging ziet (instelling ‘minder beweging’ op je toestel), krijgt dezelfde fasen zonder animaties.</p>
   <p><a href="tijdlijn.html"><b>📜 Tijdlijn</b></a> · <a href="verhalen.html"><b>📖 Verhalen</b></a> · <a href="begrippen.html"><b>📚 Begrippen &amp; legers</b></a> · <a href="routes.html"><b>🥾 Wandelen &amp; fietsen</b></a> · <a href="praktisch.html"><b>🧭 Praktisch</b></a> · <a href="programma.html"><b>📅 Dagprogramma’s</b></a></p>
   <h3>Wat is echt en wat is benaderd?</h3>
@@ -432,20 +456,33 @@ function layoutSheet(){ const h=sheetH(); document.documentElement.style.setProp
   document.querySelectorAll('.leaflet-bottom').forEach(e=>e.style.bottom=(wide()?0:h)+'px');
   document.querySelectorAll('.leaflet-right').forEach(e=>{ if(e.classList.contains('leaflet-bottom')||e.classList.contains('leaflet-top')) e.style.right=wide()?'410px':'0'; }); }
 if(window.ResizeObserver) new ResizeObserver(layoutSheet).observe(sheet); addEventListener('resize', layoutSheet);
-function setOpen(o){ sheet.classList.toggle('open',o); $('morebtn').textContent=o?'Minder ▾':'Lees meer ▴'; $('morebtn').setAttribute('aria-expanded',o); setTimeout(layoutSheet,30); }
-$('morebtn').onclick=()=>setOpen(!sheet.classList.contains('open'));
+// tekstpaneel: 'min' (alleen datum + titel), 'short' (met samenvatting) of 'full' (hele verhaal). Keuze wordt onthouden.
+const SK='ieperSimSheet', STATES=['min','short','full'];
+let sstate=(()=>{ try{ const v=localStorage.getItem(SK); if(STATES.includes(v)) return v; }catch(e){} return 'min'; })();
+function recenter(oldH){ const nh=sheetH(); if(map&&!wide()&&oldH!=null&&Math.abs(nh-oldH)>1){ map.invalidateSize({pan:false}); map.panBy([0,(nh-oldH)/2],{animate:!RM,duration:.3}); } }
+function setState(st,persist,norec){ if(!STATES.includes(st)) st='short'; const oldH=sheetH(); sstate=st;
+  sheet.classList.toggle('open',st==='full'); sheet.classList.toggle('s-min',st==='min');
+  $('morebtn').textContent=st==='full'?'Minder ▾':'Lees meer ▴'; $('morebtn').setAttribute('aria-expanded',st==='full');
+  $('grab').setAttribute('aria-expanded',st!=='min'); $('chevb').textContent=st==='full'?'▾':'▴'; $('chevt').textContent=st==='min'?'Verhaal':(st==='full'?'Inklappen':'Meer');
+  if(persist!==false){ try{ localStorage.setItem(SK,st); }catch(e){} }
+  setTimeout(()=>{ layoutSheet(); if(!norec) recenter(oldH); },40); }
+function setOpen(o){ setState(o?'full':'short'); }
+function stepState(d){ const i=STATES.indexOf(sstate); setState(STATES[Math.max(0,Math.min(2,i+d))]); }
+$('morebtn').onclick=()=>setState(sstate==='full'?'short':'full');
+$('head').addEventListener('click',e=>{ if(sstate==='min' && !wide()) setState('short'); });
+$('grab').addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); setState(sstate==='min'?'short':'min'); } });
 // drag on handle: up = open, down = close; tap = toggle
 (function(){ const g=$('grab'); let y0=null;
   g.addEventListener('pointerdown',e=>{ y0=e.clientY; g.setPointerCapture(e.pointerId); });
-  g.addEventListener('pointerup',e=>{ if(y0==null) return; const dy=e.clientY-y0; y0=null; if(dy<-25) setOpen(true); else if(dy>25) setOpen(false); else setOpen(!sheet.classList.contains('open')); });
+  g.addEventListener('pointerup',e=>{ if(y0==null) return; const dy=e.clientY-y0; y0=null; if(dy<-25) stepState(dy<-120?2:1); else if(dy>25) stepState(dy>120?-2:-1); else setState(sstate==='min'?'short':(sstate==='short'?'full':'min')); });
   g.addEventListener('pointercancel',()=>y0=null);
 })();
-// swipe left/right on the story header = next/previous
-(function(){ const h=$('head'); let s=null;
-  h.addEventListener('touchstart',e=>{ const t=e.touches[0]; s={x:t.clientX,y:t.clientY}; },{passive:true});
+// veeg links/rechts over het verhaal of de bedieningsbalk = volgende/vorige fase; omhoog/omlaag = tekst groter/kleiner
+['head','ctrl'].forEach(id=>{ const h=$(id); let s=null;
+  h.addEventListener('touchstart',e=>{ if(e.target.closest('input')) { s=null; return; } const t=e.touches[0]; s={x:t.clientX,y:t.clientY}; },{passive:true});
   h.addEventListener('touchend',e=>{ if(!s) return; const t=e.changedTouches[0], dx=t.clientX-s.x, dy=t.clientY-s.y; s=null;
-    if(Math.abs(dx)>55 && Math.abs(dy)<45) go(idx+(dx<0?1:-1), playing); else if(dy<-45 && Math.abs(dx)<40) setOpen(true); else if(dy>45 && Math.abs(dx)<40) setOpen(false); },{passive:true});
-})();
+    if(Math.abs(dx)>55 && Math.abs(dy)<45) go(idx+(dx<0?1:-1), playing); else if(dy<-45 && Math.abs(dx)<40) stepState(1); else if(dy>45 && Math.abs(dx)<40) stepState(-1); },{passive:true});
+});
 const LEG_SVG={
  al:'<svg width="34" height="10"><line x1="1" y1="5" x2="33" y2="5" stroke="#1864ab" stroke-width="3.5"/></svg>',
  de:'<svg width="34" height="10"><line x1="1" y1="5" x2="33" y2="5" stroke="#c92a2a" stroke-width="3" stroke-dasharray="7 6"/></svg>',
@@ -507,7 +544,7 @@ function go(i, keepPlaying){
     '<h4>Nu te bezoeken</h4><div class="poichips">'+poiHtml+'</div>'+
     '<p class="tlink"><a href="tijdlijn.html#e-'+s.tl+'">📜 Meer hierover in de tijdlijn ›</a></p>';
   $('more').scrollTop=0;
-  document.querySelectorAll('[data-poi]').forEach(a=>a.onclick=e=>{ e.preventDefault(); stop(); setOpen(false); const p=POIS.find(x=>x.id===a.dataset.poi);
+  document.querySelectorAll('[data-poi]').forEach(a=>a.onclick=e=>{ e.preventDefault(); stop(); if(sstate==='full') setState('short',false); const p=POIS.find(x=>x.id===a.dataset.poi);
     flyView([p.lat,p.lng,15]); setTimeout(()=>poiMarkers[p.id].openPopup(), RM?50:1200); });
   $('visbadge').innerHTML = esc(s.datum) + (hasAx(s)?'<br><span class="ax">≈ lijn deels benaderd</span>':'');
   if($('legend').classList.contains('show')) renderLegend();
@@ -541,7 +578,7 @@ function schedule(){ clearTimeout(playTimer); const s=STEPS[idx], d=(s.dur||10)+
 function stop(){ playing=false; clearTimeout(playTimer); $('play').textContent='▶'; $('play').setAttribute('aria-label','Afspelen'); const pb=$('progbar'); pb.style.transition='none'; pb.style.width='0'; }
 function tick(){ if(!playing) return; if(idx>=N-1){ stop(); return; } go(idx+1,true); }
 $('play').onclick=()=>{ if(playing){ stop(); return; } playing=true; $('play').textContent='❚❚'; $('play').setAttribute('aria-label','Pauzeren');
-  if(!wide()) setOpen(false); go(idx>=N-1?0:idx, true); };
+  go(idx>=N-1?0:idx, true); };
 $('prev').onclick=()=>go(idx-1, playing);
 $('next').onclick=()=>go(idx+1, playing);
 $('slider').oninput=e=>go(+e.target.value);
@@ -552,7 +589,7 @@ $('info').onclick=e=>{ if(e.target.id==='info') e.target.classList.remove('show'
 $('srclist').innerHTML = SOURCES.map(s=>'<li><b>'+esc(s[0])+':</b> <a href="'+s[2]+'" target="_blank" rel="noopener">'+esc(s[1])+'</a></li>').join('');
 function fromHash(){ const h=location.hash.slice(1); let m=/^stap(\d+)$/.exec(h); if(m && LEGACY[m[1]]) return STEPS.findIndex(s=>s.id===LEGACY[m[1]]);
   const i=STEPS.findIndex(s=>s.id===h); return i>=0?i:0; }
-sizeCanvas(); layoutSheet();
+setState(sstate,false,true); sizeCanvas(); layoutSheet();
 go(fromHash());
 addEventListener('hashchange',()=>{ const i=fromHash(); if(i!==idx) go(i); });
 window.__simReady = true;
