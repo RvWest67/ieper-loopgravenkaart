@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
 <script src="vendor/leaflet/leaflet.js"></script>
 <script src="weekendroute.js"></script>
+<script src="routes.js"></script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%BA%3C/text%3E%3C/svg%3E">
 <style>
 :root{--bg:#fffdf7;--ink:#2b2b2b;--accent:#8b5a2b;--bar:#3b3222}
@@ -113,6 +114,10 @@ input[type=range]{width:100%}
   <div class="note">Dekking historische kaartlagen: <span id="opv">80</span>%</div>
   <input type="range" id="opacity" min="0" max="100" value="80">
 
+  <h2>Wandel- &amp; fietsroutes</h2>
+  <div id="rtRow"></div>
+  <div class="note">Officiële bewegwijzerde routes (zie <a href="routes.html">Wandelen &amp; fietsen</a>). Doorgetrokken lijn = routelijn uit OpenStreetMap; stippellijn = <b>benadering</b> via start en hoogtepunten.</div>
+
   <h2>Gevaar &amp; munitie</h2>
   <label class="tog"><input type="checkbox" id="tgGev"> 💣 Niet-ontplofte mijnen &amp; DOVO</label>
   <div class="note">Alleen plekken met een betrouwbare bron, bij benadering. België heeft geen officiële ‘zone rouge’. Munitie gezien? <b>Niet aanraken, afstand houden, bel 101.</b></div>
@@ -133,7 +138,7 @@ input[type=range]{width:100%}
   <p><a href="tijdlijn.html"><b>📜 Tijdlijn</b></a>: ruim 50 momenten van 1914 tot nu, met bronnen.</p>
   <p><a href="verhalen.html"><b>📖 Verhalen</b></a>: 20 persoonlijke verhalen bij plekken op de kaart.</p>
   <p><a href="begrippen.html"><b>📚 Begrippen &amp; legers</b></a>: woordenlijst (sappe, pillbox, yperiet…), wie er vocht en hoe je de begraafplaatsen herkent.</p>
-  <p><a href="routes.html"><b>🥾 Wandelen &amp; fietsen</b></a>: tien officiële routes langs het oude front, met toegankelijkheid en kaartjes.</p>
+  <p><a href="routes.html"><b>🥾 Wandelen &amp; fietsen</b></a>: tien officiële routes langs het oude front, met toegankelijkheid en kaartjes. Alle routes staan ook als lagen op deze kaart (☰ Lagen, of <a href="kaart.html#routes">kaart.html#routes</a>).</p>
   <p><a href="praktisch.html"><b>🧭 Praktisch</b></a>: openingstijden en prijzen, Last Post, parkeren, bereikbaarheid en eten.</p>
   <p><a href="wapens.html"><b>🛡️ Wapens &amp; tanks</b></a>: tanks, artillerie, gas en mijnen in cijfers.</p>
   <p><a href="weekendroute.html"><b>🚗 3-daagse route</b></a>: een weekendroute in drie dagen, van Alveringem tot Raversyde (ook als laag op deze kaart).</p>
@@ -397,6 +402,32 @@ GEV.forEach(g=>{
 });
 bindToggle('tgGev', gev);
 if (/^#gevaar/.test(location.hash)) { const t=document.getElementById('tgGev'); t.checked=true; t.onchange(); map.fitBounds(L.latLngBounds(GEV.map(g=>[g.lat,g.lng])),{padding:[40,40]}); }
+
+// ---- Wandel- en fietsroutes (gegevens uit routes.js) ----
+if (window.ROUTES) {
+  map.createPane('rt'); map.getPane('rt').style.zIndex = 630;
+  const rtRow=document.getElementById('rtRow'), rtLayers={};
+  ROUTES.forEach(r=>{
+    const g=L.layerGroup(), exact=!!r.g;
+    const html='<div class="pop"><h3>'+(r.t==='fiets'?'🚲 ':'🚶 ')+esc(r.naam)+'</h3><span class="badge" style="background:'+r.c+'">'+(r.t==='fiets'?'Fietsroute':'Wandelroute')+' · '+esc(r.km)+'</span>'+
+      (exact?'<p>Lijn: routelijn uit OpenStreetMap (© OSM-bijdragers).</p>':'<p class="enk">⚠️ <b>Benadering:</b> geen routelijn beschikbaar; de stippellijn verbindt alleen start en hoogtepunten. Volg ter plaatse de bewegwijzering.</p>')+
+      '<p><b>Start:</b> '+esc(r.s[2])+'</p><div class="btns"><a href="'+r.gm+'" target="_blank" rel="noopener">🗺️ Route in Google Maps</a><a class="sec" href="routes.html#r-'+r.id+'">Routepagina</a></div></div>';
+    if (exact) r.g.forEach(seg=>{ L.polyline(seg,{pane:'rt',color:'#fff',weight:6,opacity:.7,interactive:false}).addTo(g); L.polyline(seg,{pane:'rt',color:r.c,weight:3.5,opacity:.95}).bindPopup(html,{maxWidth:320}).addTo(g); });
+    else { const pts=[[r.s[0],r.s[1]]].concat(r.m.map(m=>[m[0],m[1]])).concat([[r.s[0],r.s[1]]]);
+      L.polyline(pts,{pane:'rt',color:r.c,weight:3.5,opacity:.9,dashArray:'2 8',lineCap:'round'}).bindPopup(html,{maxWidth:320}).addTo(g); }
+    r.m.forEach(m=>L.circleMarker([m[0],m[1]],{pane:'rt',radius:5,color:'#fff',weight:2,fillColor:r.c,fillOpacity:1}).bindPopup('<b>'+esc(m[2])+'</b><br>'+esc(r.naam)).addTo(g));
+    L.marker([r.s[0],r.s[1]],{pane:'rt',title:'Start: '+r.naam,icon:L.divIcon({className:'',iconSize:[26,26],iconAnchor:[13,13],popupAnchor:[0,-12],html:'<div class="wrn" style="background:'+r.c+';font-size:14px">'+(r.t==='fiets'?'🚲':'🚶')+'</div>'})}).bindPopup(html,{maxWidth:320, autoPanPaddingTopLeft:[10,70]}).addTo(g);
+    rtLayers[r.id]=g;
+    const lab=document.createElement('label'); lab.className='tog';
+    lab.innerHTML='<input type="checkbox" data-r="'+r.id+'"> <span class="dot" style="display:inline-block;width:11px;height:11px;border-radius:50%;background:'+r.c+'"></span> '+(r.t==='fiets'?'🚲 ':'🚶 ')+esc(r.naam)+' <span class="note">('+esc(r.km)+(exact?'':', benadering')+')</span>';
+    const cb=lab.querySelector('input'); cb.onchange=()=>{ cb.checked?g.addTo(map):map.removeLayer(g); };
+    rtRow.appendChild(lab);
+  });
+  const m=location.hash.match(/^#routes?(?:=([\w,-]+))?/);
+  if (m) { const ids=m[1]?m[1].split(','):Object.keys(rtLayers); const b=L.latLngBounds([]);
+    ids.forEach(id=>{ const cb=rtRow.querySelector('input[data-r="'+id+'"]'); if(cb){ cb.checked=true; cb.onchange(); const r=ROUTES.find(x=>x.id===id); b.extend([r.s[0],r.s[1]]); (r.g||[]).forEach(seg=>seg.forEach(p=>b.extend(p))); r.m.forEach(p=>b.extend([p[0],p[1]])); } });
+    if (b.isValid()) map.fitBounds(b,{padding:[30,30]}); }
+}
 
 setYear(curYear);
 if (window.innerWidth >= 800) { panel.classList.remove('hidden'); bp.classList.add('on'); }
