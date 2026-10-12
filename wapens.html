@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Wapens &amp; tanks · Ieperboog 1914–1918</title>
+<meta name="description" content="Tanks, artillerie, machinegeweren, geweren, granaten, gas en mijnen rond Ieper in 1914–1918, met aantallen, vergelijkingen en bronnen.">
+<meta name="theme-color" content="#3b3222">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%BA%3C/text%3E%3C/svg%3E">
+
+
+<style>
+:root{--bg:#fffdf7;--ink:#2b2b2b;--accent:#8b5a2b;--bar:#3b3222;--poppy:#c92a2a}
+*{box-sizing:border-box}
+html.sm{scroll-behavior:smooth}
+html,body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+#top{position:sticky;top:0;z-index:50;background:var(--bar);color:#fff;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+#bar{display:flex;align-items:center;gap:6px;padding:calc(6px + env(safe-area-inset-top)) 8px 6px}
+#bar h1{font-size:15px;margin:0;flex:1;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#bar h1 small{display:block;font-weight:400;font-size:11px;opacity:.8}
+.tbtn{background:#fff;color:var(--bar);border:0;border-radius:18px;padding:7px 11px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;text-decoration:none;display:inline-block}
+.tbtn.home{padding:7px 9px}
+.row{display:flex;gap:6px;overflow-x:auto;padding:0 8px 7px;scrollbar-width:none}
+.row::-webkit-scrollbar{display:none}
+.ych{flex:0 0 auto;color:#fff;text-decoration:none;font-weight:700;font-size:13px;padding:5px 11px;border-radius:15px;border:1.5px solid rgba(255,255,255,.35)}
+.ych.on{background:var(--poppy);border-color:var(--poppy)}
+main{max-width:720px;margin:0 auto;padding:10px 12px 20px}
+.intro{font-size:14px;line-height:1.5;color:#444;margin:6px 2px}
+section.sec{scroll-margin-top:96px}
+section.sec>h2{font-size:21px;color:var(--accent);margin:22px 0 8px;padding:0 2px 4px;border-bottom:2px solid #e4d9c6}
+.ic{font-size:22px;line-height:1}
+.leg{font-size:13px;background:#fff4e6;border-left:3px solid #f08c00;padding:6px 9px;margin:8px 0 0;line-height:1.45}
+.links{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;align-items:center}
+.vbl{font-size:12.5px;color:#666}
+.lk{font-size:12.5px;text-decoration:none;background:#f3e6d6;color:var(--bar);border-radius:12px;padding:5px 10px;font-weight:600}
+.lk.tl{background:#ece5fd}.lk.sim{background:#fde4e1}.lk.vh{background:#e3f4e6}.lk.in{background:#eef0f2}
+.bn{display:block;font-size:11.5px;color:#888;margin-top:7px}
+.bn a{color:var(--accent);text-decoration:none;margin-right:2px}
+.flash{animation:flash 2.2s ease-out}
+@keyframes flash{0%{box-shadow:0 0 0 4px var(--poppy)}100%{box-shadow:0 1px 4px rgba(59,50,34,.08)}}
+.hid{display:none!important}
+.note{font-size:12.5px;color:#666;line-height:1.5}
+footer{text-align:center;font-size:12px;color:#777;padding:10px 16px calc(24px + env(safe-area-inset-bottom))}
+footer a{color:var(--accent)}
+@media (prefers-reduced-motion: reduce){html.sm{scroll-behavior:auto}.flash{animation:none}}
+.bd{display:inline-block;font-size:12px;font-weight:700;border-radius:10px;padding:3px 8px;background:#f1f3f5;color:#333;white-space:nowrap}
+.bd.makkelijk{background:#d3f9d8;color:#1b5e20}.bd.gemiddeld{background:#fff3bf;color:#7a5b00}.bd.pittig{background:#ffe3e3;color:#a51111}
+.ic{font-size:22px;line-height:1}
+.off{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+.box{background:#fbf5ee;border:1px solid #e4d9c6;border-radius:12px;padding:10px 13px;margin:6px 0 12px;font-size:14px;line-height:1.55}
+.box h3{margin:0 0 4px;font-size:16px;color:var(--bar)}
+.rent{background:#fff;border:1px solid #e4d9c6;border-left:5px solid #1c7ed6;border-radius:12px;padding:9px 12px;margin:0 0 8px}
+.rent b{font-size:15px;color:var(--bar)}
+.rent .ad{font-size:12.5px;color:#666}
+.rent p{font-size:13.5px;margin:4px 0;line-height:1.45}
+.rent a{font-size:13px;color:var(--accent);font-weight:600;word-break:break-word}
+
+
+.box ul{margin:4px 0 0;padding-left:20px}
+.box li{margin:3px 0}
+.box .bn{display:inline;margin:0}
+.box p{margin:4px 0}
+.tw{margin:6px 0 10px}
+table.pt{border-collapse:collapse;width:100%;font-size:13.5px;line-height:1.45;background:#fff}
+table.pt th,table.pt td{border:1px solid #e4d9c6;padding:6px 8px;vertical-align:top;text-align:left}
+table.pt thead th{background:var(--bar);color:#fff;font-size:12.5px}
+table.pt tbody th{color:var(--bar);font-size:14px}
+table.pt .bn{display:block;margin-top:4px}
+.lks{margin-top:5px;font-weight:400}
+@media (max-width:700px){
+ table.pt thead{display:none}
+ table.pt,table.pt tbody,table.pt tr,table.pt th,table.pt td{display:block;width:100%}
+ table.pt tr{border:1px solid #e4d9c6;border-left:5px solid var(--accent);border-radius:12px;margin:0 0 10px;padding:8px 11px;box-shadow:0 1px 4px rgba(59,50,34,.08);background:#fff}
+ table.pt th,table.pt td{border:0;padding:3px 0}
+ table.pt tbody th{font-size:16px;padding-bottom:4px}
+ table.pt td::before{content:attr(data-l);display:block;font-size:11.5px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.02em}
+}
+.big{font-size:15px;line-height:1.55}
+.nr{display:grid;grid-template-columns:auto 1fr;gap:6px 10px;align-items:baseline;font-size:14px}
+.nr b{font-size:20px;color:var(--poppy);text-align:right}
+.ok{color:#2b8a3e;font-weight:700}.no{color:var(--poppy);font-weight:700}
+.stamp{display:inline-block;font-size:12px;font-weight:700;background:#d3f9d8;color:#1b5e20;border-radius:10px;padding:3px 9px;margin:2px 0 4px}
+
+
+.leaflet-container{font:inherit}
+.leaflet-popup-content{margin:9px 11px;font-size:13px;line-height:1.4}
+.phead{background:#fff;border:1px solid #e4d9c6;border-left:5px solid var(--accent);border-radius:12px;padding:10px 13px;margin:6px 0 10px;box-shadow:0 1px 4px rgba(59,50,34,.08)}
+.phead .sub{font-size:13px;color:#666;font-weight:600}
+.phead p{font-size:14px;line-height:1.5;margin:6px 0}
+.sum{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.mapbox{height:260px;border-radius:12px;border:1px solid #e4d9c6;margin:8px 0 4px;background:#eef0f2;z-index:1}
+.mcap{font-size:11.5px;color:#888;margin:0 2px 10px}
+.num{display:flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--bar);color:#fff;font-weight:800;font-size:12px;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.4)}
+.num.s{background:#2f9e44}
+.nicon{background:none;border:0}
+ol.tline{list-style:none;margin:6px 0 10px;padding:0}
+ol.tline li.st{position:relative;background:#fff;border:1px solid #e4d9c6;border-radius:12px;padding:9px 12px 9px 50px;margin:0;box-shadow:0 1px 4px rgba(59,50,34,.06)}
+ol.tline li.st .num{position:absolute;left:12px;top:10px}
+.tm{display:inline-block;font-weight:800;color:var(--poppy);font-size:14px;margin-right:4px;font-variant-numeric:tabular-nums}
+.st b.tt{font-size:15px;color:var(--bar)}
+.du{display:inline-block;font-size:12px;font-weight:700;background:#f1f3f5;border-radius:10px;padding:2px 8px;margin-left:4px;white-space:nowrap}
+.st p{font-size:13.5px;line-height:1.45;margin:4px 0 0}
+li.lg{font-size:12.5px;color:#555;padding:5px 0 5px 22px;margin-left:11px;border-left:3px dotted #c9b89d}
+li.lg.foot{border-left-style:dashed}
+li.lg .wait{color:#2b8a3e;font-weight:600}
+.lunch{background:#fff9db;border-radius:9px;padding:6px 9px;margin-top:6px;font-size:13px;line-height:1.45}
+.lunch .alt{display:block;margin-top:4px;color:#555}
+.dicht{background:#fff5f5;border-left:4px solid var(--poppy);border-radius:10px;padding:8px 11px;margin:8px 0;font-size:13.5px;line-height:1.5}
+.dicht ul,.rust ul{margin:3px 0 0;padding-left:18px}
+.rust{background:#ebfbee;border-left:4px solid #2f9e44;border-radius:10px;padding:8px 11px;margin:8px 0;font-size:13.5px;line-height:1.5}
+.rust h3,.dicht h3{margin:0 0 3px;font-size:15px;color:var(--bar)}
+.gbtn{display:inline-block;background:#1c7ed6;color:#fff;text-decoration:none;font-weight:700;font-size:13px;border-radius:16px;padding:7px 12px}
+.gbtn.alt{background:#2f9e44}
+.bars{margin:8px 0 4px}.bar{display:grid;grid-template-columns:minmax(92px,34%) 1fr;gap:6px;align-items:center;font-size:13px;margin:5px 0}
+.bar .lb{color:#444;line-height:1.25}.bar .tr{background:#f1ece3;border-radius:7px;overflow:hidden}.bar .fl{background:var(--accent);color:#fff;font-weight:700;font-size:12px;padding:4px 7px;white-space:nowrap;min-width:fit-content}
+.bar .fl.r{background:var(--poppy)}.bar .fl.g{background:#2f9e44}.bar .fl.b{background:#1c7ed6}.bar .fl.k{background:#495057}
+.spec{display:grid;grid-template-columns:auto 1fr;gap:3px 10px;font-size:13.5px;margin:6px 0}.spec dt{font-weight:700;color:var(--bar)}.spec dd{margin:0}
+@media(max-width:560px){.spec{grid-template-columns:1fr}.spec dd{margin:0 0 6px}}
+.cap{font-size:12px;color:#777;margin:2px 0 10px}
+
+<!--pwa-->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Ieperboog 14–18"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>#offtoast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom));z-index:2000;max-width:min(92vw,520px);background:#212529;color:#fff;font:13px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;border-radius:12px;padding:9px 34px 9px 12px;box-shadow:0 3px 12px rgba(0,0,0,.35)}#offtoast button{position:absolute;right:6px;top:5px;background:none;border:0;color:#fff;font-size:18px;cursor:pointer}</style>
+<script>
+(function(){
+  if('serviceWorker' in navigator && (location.protocol==='https:'||/^(localhost|127\.0\.0\.1)$/.test(location.hostname))) addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+  function toast(on){ let t=document.getElementById('offtoast');
+    if(!on){ if(t) t.remove(); return; } if(t||!document.body) return;
+    t=document.createElement('div'); t.id='offtoast'; t.setAttribute('role','status');
+    t.innerHTML='📴 <b>Offline</b>: je bekijkt de bewaarde versie.'+(document.getElementById('map')||window.L?' Kaarttegels die je eerder bekeek, blijven zichtbaar; luchtfoto’s en erfgoedlagen hebben internet nodig.':'')+'<button type="button" aria-label="Sluiten">×</button>';
+    t.querySelector('button').onclick=()=>t.remove(); document.body.appendChild(t); }
+  addEventListener('offline',()=>toast(true)); addEventListener('online',()=>toast(false));
+  document.addEventListener('DOMContentLoaded',()=>{ if(navigator.onLine===false) toast(true); });
+})();
+</script>
+<!--/pwa-->
+</head>
+<body>
+<div id="top"><div id="bar"><a class="tbtn home" href="index.html" title="Naar het startmenu" aria-label="Home / menu">🏠</a><h1>Wapens &amp; tanks<small>Hoe er gevochten werd, in cijfers</small></h1><a class="tbtn" href="kaart.html">🗺 Kaart</a></div>
+<nav class="row" id="srow" aria-label="Onderdelen"><a class="ych" href="#tanks" data-s="tanks">🛡️ Tanks</a><a class="ych" href="#artillerie" data-s="artillerie">💥 Artillerie</a><a class="ych" href="#mitrailleurs" data-s="mitrailleurs">🔫 Machinegeweren</a><a class="ych" href="#geweren" data-s="geweren">🎯 Geweren</a><a class="ych" href="#granaten" data-s="granaten">🧨 Granaten</a><a class="ych" href="#gas" data-s="gas">☠️ Gas</a><a class="ych" href="#mijnen" data-s="mijnen">⛏️ Mijnen</a><a class="ych" href="#vliegtuigen" data-s="vliegtuigen">✈️ Vliegtuigen</a><a class="ych" href="#echt" data-s="echt">👀 Waar</a></nav></div>
+<main><p class="intro"><span class="stamp">✔ Nagekeken okt. 2026</span><br>Welke wapens werden er rond Ieper gebruikt, hoeveel, en wat deden ze? Elk cijfer komt uit de bron die erbij staat; ⚠️ betekent dat bronnen verschillen of dat het om een schatting gaat. De balken tonen verhoudingen per grafiek.</p>
+<section class="sec" id="tanks"><h2>🛡️ Tanks</h2>
+<div class="box"><h3>Mark IV (Brits, 1917)</h3>
+<p>De Mark IV kwam in mei 1917 in dienst en werd de meest gebouwde tank van de oorlog. Er waren twee gevechtsversies: de <b>‘Male’</b> met twee 6-ponderkanonnen (57 mm) en machinegeweren, en de <b>‘Female’</b> met alleen machinegeweren. Daarnaast waren er ongewapende bevoorradingstanks.</p>
+<dl class="spec"><dt>Bemanning</dt><dd>8 (commandant, bestuurder, twee ‘gearsmen’ voor de versnellingen en vier schutters)</dd>
+<dt>Gewicht</dt><dd>Male 28,4 t · Female 27,4 t</dd><dt>Bewapening</dt><dd>Male: 2 × 6-ponder (57 mm) + 3 Lewis-mitrailleurs · Female: 5 Lewis-mitrailleurs</dd>
+<dt>Pantser</dt><dd>12 mm</dd><dt>Motor</dt><dd>Daimler, 16 liter, 105 pk</dd><dt>Snelheid</dt><dd>max. ± 6,4 km/u (wandeltempo)</dd><dt>Bereik</dt><dd>± 56 km</dd></dl>
+<div class="bars" role="img" aria-label="Gebouwde aantallen: 1.220 Mark IV’s tegenover 20 Duitse A7V’s. ⚠️ Het Tank Museum noemt elders 1.222."><div class="bar"><span class="lb">Female (mitrailleurs)</span><span class="tr"><span class="fl " style="display:block;width:100%">595</span></span></div><div class="bar"><span class="lb">Male (kanonnen)</span><span class="tr"><span class="fl r" style="display:block;width:71%">420</span></span></div><div class="bar"><span class="lb">Bevoorradingstank</span><span class="tr"><span class="fl k" style="display:block;width:34%">205</span></span></div><div class="bar"><span class="lb">Duitse A7V (totaal)</span><span class="tr"><span class="fl b" style="display:block;width:3%">20</span></span></div></div><p class="cap">Gebouwde aantallen: 1.220 Mark IV’s tegenover 20 Duitse A7V’s. ⚠️ Het Tank Museum noemt elders 1.222.</p>
+<p>Binnen was het heet, lawaaierig en vol uitlaatgassen; er was geen vering. Ongeveer 40 buitgemaakte Mark IV’s werden door de Duitsers zelf ingezet (‘Beutepanzer’).</p>
+<span class="bn">Bron: <a href="https://tankmuseum.org/article/the-mark-iv/" target="_blank" rel="noopener">The Tank Museum – The New Mark IV</a> · <a href="https://tankmuseum.org/tank_collection/mark-iv/" target="_blank" rel="noopener">The Tank Museum – Mark IV</a> · <a href="https://en.wikipedia.org/wiki/Mark_IV_(tank)" target="_blank" rel="noopener">Wikipedia – Mark IV (tank)</a></span></div>
+<div class="box"><h3>Tanks in de Ieperboog, 1917</h3>
+<p>Bij de Slag om Mesen (7 juni 1917) stonden 72 nieuwe Mark IV’s klaar. Voor de eerste dag van de Derde Slag om Ieper (31 juli 1917) plande generaal Gough 120 Mark IV’s, met nog 48 in reserve.</p>
+<div class="bars" role="img" aria-label="Ingezette Mark IV-tanks volgens Wikipedia (op basis van de Britse officiële geschiedenis)."><div class="bar"><span class="lb">Mesen, 7 juni 1917</span><span class="tr"><span class="fl " style="display:block;width:60%">72</span></span></div><div class="bar"><span class="lb">Pilkem, 31 juli 1917 (aanval)</span><span class="tr"><span class="fl r" style="display:block;width:100%">120</span></span></div><div class="bar"><span class="lb">+ reserve 31 juli</span><span class="tr"><span class="fl k" style="display:block;width:40%">48</span></span></div></div><p class="cap">Ingezette Mark IV-tanks volgens Wikipedia (op basis van de Britse officiële geschiedenis).</p>
+<p><b>Waarom bleven ze steken?</b> Het artilleriebeschot vernielde het afwateringssysteem van de lage, kleiige grond; met de zware regen van augustus werd het slagveld een moeras. Op 27 augustus 1917 liepen de tanks van een gecombineerde aanval vast en mislukte de aanval. De beste tankresultaten in de Ieperboog kwamen op 19 augustus bij Sint-Juliaan, op en langs de weg naar Poelkapelle. Een tank van 28 ton met 105 pk en zonder vering zakte gewoon weg in de modder.</p>
+<span class="bn">Bron: <a href="https://en.wikipedia.org/wiki/Battle_of_Messines_(1917)" target="_blank" rel="noopener">Wikipedia – Battle of Messines (1917)</a> · <a href="https://en.wikipedia.org/wiki/Battle_of_Pilckem_Ridge" target="_blank" rel="noopener">Wikipedia – Battle of Pilckem Ridge</a> · <a href="https://en.wikipedia.org/wiki/Battle_of_Passchendaele" target="_blank" rel="noopener">Wikipedia – Battle of Passchendaele</a> · <a href="https://www.iwm.org.uk/sites/default/files/press-release/passchendaele_fact_sheet.pdf" target="_blank" rel="noopener">IWM – Passchendaele fact sheet</a></span></div>
+<div class="box"><h3>Duitse A7V</h3><p>Duitsland bouwde er slechts <b>20</b>. Een bemanning van minstens 18 man (17 soldaten en een officier) en een 57 mm-kanon. In april 1918 schakelde een Britse Mark IV Male een A7V uit: het eerste gevecht tussen twee tanks.</p>
+<span class="bn">Bron: <a href="https://en.wikipedia.org/wiki/A7V" target="_blank" rel="noopener">Wikipedia – A7V</a> · <a href="https://tankmuseum.org/tank_collection/mark-iv/" target="_blank" rel="noopener">The Tank Museum – Mark IV</a></span></div>
+<p class="note">🚜 De tank bij <a href="weekendroute.html#pondfarm">Pondfarm (Langemark)</a> is een <b>replica</b>, gebouwd door de Poelcapelle 1917 Association; op de boerderij zijn ook originele tankstukken te zien.</p></section><section class="sec" id="artillerie"><h2>💥 Artillerie</h2>
+<div class="box"><p>Het artilleriebeschot vormde het landschap: de kraters, de modder en de ‘ijzeren oogst’ van vandaag komen grotendeels van granaten. Veldkanonnen schoten vrij vlak over korte afstand; houwitsers (‘howitzers’) schoten hoog en vielen steil neer, ideaal tegen loopgraven en bunkers. Voor een grote aanval kwam er dagenlang ‘voorbereidend beschot’ en tijdens de aanval een ‘rollend vuur’ (creeping barrage) vlak voor de infanterie uit.</p>
+<div class="bars" role="img" aria-label="Granaten van het Britse voorbereidend beschot. ⚠️ Voor juli 1917 noemen bronnen 4,25 (IWM) tot 4,3–4,5 miljoen."><div class="bar"><span class="lb">Mesen, week vóór 7 juni 1917</span><span class="tr"><span class="fl " style="display:block;width:84%">3,56 miljoen</span></span></div><div class="bar"><span class="lb">Derde Slag om Ieper, juli 1917</span><span class="tr"><span class="fl r" style="display:block;width:100%">± 4,25 miljoen</span></span></div></div><p class="cap">Granaten van het Britse voorbereidend beschot. ⚠️ Voor juli 1917 noemen bronnen 4,25 (IWM) tot 4,3–4,5 miljoen.</p>
+<div class="bars" role="img" aria-label="Britse kanonnen en houwitsers bij het voorbereidend beschot. ⚠️ Een bron noemt precies 3.091 voor juli 1917."><div class="bar"><span class="lb">Mesen</span><span class="tr"><span class="fl " style="display:block;width:74%">2.230</span></span></div><div class="bar"><span class="lb">Derde Slag om Ieper</span><span class="tr"><span class="fl r" style="display:block;width:100%">ruim 3.000</span></span></div></div><p class="cap">Britse kanonnen en houwitsers bij het voorbereidend beschot. ⚠️ Een bron noemt precies 3.091 voor juli 1917.</p>
+<p>Het beschot van juli 1917 was volgens het IWM het zwaarste en langst volgehouden van de oorlog. Toch waren op 31 juli in de Duitse eerste linie alleen al nog 64 bunkers met machinegeweren actief.</p>
+<span class="bn">Bron: <a href="https://en.wikipedia.org/wiki/Battle_of_Messines_(1917)" target="_blank" rel="noopener">Wikipedia – Battle of Messines (1917)</a> · <a href="https://www.iwm.org.uk/sites/default/files/press-release/passchendaele_fact_sheet.pdf" target="_blank" rel="noopener">IWM – Passchendaele fact sheet</a> · <a href="https://web.archive.org/web/20080609013152/http:/www.1914-1918.net/bat20_pilkem.html" target="_blank" rel="noopener">1914-1918.net – Battle of Pilkem (archief)</a> · <a href="https://www.britannica.com/event/Battle-of-Passchendaele" target="_blank" rel="noopener">Britannica – Passchendaele</a></span></div></section><section class="sec" id="mitrailleurs"><h2>🔫 Machinegeweren</h2>
+<div class="box"><p>Machinegeweren met waterkoeling konden urenlang doorvuren en maakten aanvallen over open terrein dodelijk. In de Ieperboog stonden de Duitse mitrailleurs vaak in betonnen bunkers (pillboxen).</p>
+<dl class="spec"><dt>Vickers (Brits)</dt><dd>.303 (7,7 mm), waterkoeling, bediend door 3 man; 450–600 schoten per minuut; men rekende op 10.000 schoten per uur, met elk uur een nieuwe loop.</dd>
+<dt>MG 08 (Duits)</dt><dd>7,92 mm, gordels van 250 patronen, ± 3,7 liter koelwater; gemiddeld ± 500 schoten per minuut (600 met de latere Schloss 16).</dd>
+<dt>Lewis (Brits, licht)</dt><dd>Pannenmagazijn tot 96 patronen; ook de wapens in de Mark IV.</dd></dl>
+<div class="bars" role="img" aria-label="Schoten per minuut: machinegeweer tegenover een getrainde schutter met een Lee-Enfield."><div class="bar"><span class="lb">Vickers (max.)</span><span class="tr"><span class="fl " style="display:block;width:100%">450–600/min</span></span></div><div class="bar"><span class="lb">MG 08</span><span class="tr"><span class="fl r" style="display:block;width:83%">± 500/min</span></span></div><div class="bar"><span class="lb">Geweer, ‘mad minute’</span><span class="tr"><span class="fl k" style="display:block;width:5%">20–30/min</span></span></div></div><p class="cap">Schoten per minuut: machinegeweer tegenover een getrainde schutter met een Lee-Enfield.</p>
+<span class="bn">Bron: <a href="https://en.wikipedia.org/wiki/Vickers_machine_gun" target="_blank" rel="noopener">Wikipedia – Vickers machine gun</a> · <a href="https://en.wikipedia.org/wiki/MG_08" target="_blank" rel="noopener">Wikipedia – MG 08</a> · <a href="https://en.wikipedia.org/wiki/Mark_IV_(tank)" target="_blank" rel="noopener">Wikipedia – Mark IV (tank)</a> · <a href="https://en.wikipedia.org/wiki/Lee–Enfield" target="_blank" rel="noopener">Wikipedia – Lee–Enfield</a></span></div></section><section class="sec" id="geweren"><h2>🎯 Geweren</h2>
+<div class="box"><dl class="spec"><dt>Lee-Enfield (Brits)</dt><dd>.303, grendelgeweer met een magazijn van 10 patronen. Een goed getrainde schutter haalde in de ‘mad minute’ 20 tot 30 gerichte schoten per minuut.</dd>
+<dt>Gewehr 98 ‘Mauser’ (Duits)</dt><dd>7,92 mm, laadstrip van 5 patronen. In 1914 had het Duitse leger 2.273.080 Mauser 98-geweren; tijdens de oorlog kwamen er ± 7 miljoen bij.</dd></dl>
+<div class="bars" role="img" aria-label="Duitse Mauser 98-geweren."><div class="bar"><span class="lb">Gewehr 98 in 1914</span><span class="tr"><span class="fl r" style="display:block;width:32%">2,27 miljoen</span></span></div><div class="bar"><span class="lb">Gewehr 98 erbij tijdens de oorlog</span><span class="tr"><span class="fl " style="display:block;width:100%">± 7 miljoen</span></span></div></div><p class="cap">Duitse Mauser 98-geweren.</p>
+<span class="bn">Bron: <a href="https://en.wikipedia.org/wiki/Lee–Enfield" target="_blank" rel="noopener">Wikipedia – Lee–Enfield</a> · <a href="https://en.wikipedia.org/wiki/Gewehr_98" target="_blank" rel="noopener">Wikipedia – Gewehr 98</a></span></div></section><section class="sec" id="granaten"><h2>🧨 Granaten & mortieren</h2>
+<div class="box">
+<dl class="spec"><dt>Mills bomb (Brits)</dt><dd>De ‘ananas’-granaat met een vertraging van 4 seconden. Van de eerste versie, de No. 5 (1915), werden tot 1917 <b>33.168.367</b> stuks gemaakt.</dd>
+<dt>Stielhandgranate (Duits)</dt><dd>De ‘steelgranaat’ met houten steel.</dd>
+<dt>Stokes-mortier (Brits)</dt><dd>81 mm (‘3 inch’), tot 25 granaten per minuut, bereik tot ± 730 m. Een mortier schoot steil omhoog, recht in de vijandelijke loopgraaf.</dd></dl>
+<span class="bn">Bron: <a href="https://en.wikipedia.org/wiki/Mills_bomb" target="_blank" rel="noopener">Wikipedia – Mills bomb</a> · <a href="https://en.wikipedia.org/wiki/Stokes_mortar" target="_blank" rel="noopener">Wikipedia – Stokes mortar</a> · <a href="https://en.wikipedia.org/wiki/Model_24_Stielhandgranate" target="_blank" rel="noopener">Wikipedia – Model 24 Stielhandgranate</a></span></div></section><section class="sec" id="gas"><h2>☠️ Gas</h2>
+<div class="box"><p>Ieper is wereldwijd verbonden met gifgas: hier begon de grootschalige gasoorlog, en mosterdgas heet in het Frans en Nederlands nog altijd <b>yperiet</b>.</p>
+<dl class="spec"><dt>Chloor · 22 april 1915</dt><dd>Bij Langemark-Poelkapelle liet het Duitse leger <b>167 ton</b> chloor ontsnappen uit <b>5.730 gasflessen</b>. Een grijsgroene wolk dreef naar de Franse en Algerijnse linies (Tweede Slag om Ieper).</dd>
+<dt>Fosgeen · 19 december 1915</dt><dd>Eerste Duitse aanval met een mengsel van chloor en fosgeen, bij Wieltje (Ieper): <b>88 ton</b> uit flessen, 1.069 slachtoffers, van wie 69 doden. Fosgeen was kleurloos en rook naar muf hooi, dus moeilijk te merken.</dd>
+<dt>Mosterdgas · 12 juli 1917</dt><dd>Eerste gebruik, door Duitsland bij Ieper, weken vóór de Derde Slag om Ieper. Geen echt gas maar een olieachtige vloeistof die brandwonden en blaren maakt; de Duitse granaten waren geel gemarkeerd. Daarom ‘yperiet’.</dd></dl>
+<div class="bars" role="img" aria-label="Hoeveelheid gas bij twee aanvallen uit flessen rond Ieper."><div class="bar"><span class="lb">Chloor, 22 april 1915</span><span class="tr"><span class="fl g" style="display:block;width:100%">167 t</span></span></div><div class="bar"><span class="lb">Chloor + fosgeen, 19 dec. 1915</span><span class="tr"><span class="fl " style="display:block;width:53%">88 t</span></span></div></div><p class="cap">Hoeveelheid gas bij twee aanvallen uit flessen rond Ieper.</p>
+<p>Over de hele oorlog schatten historici ± 1,3 miljoen gasslachtoffers en tot ± 90.000 doden: zo’n 3–3,5% van alle slachtoffers. Gasmaskers waren een doeltreffend tegenwapen.</p>
+<p class="dicht">💣 Gasgranaten liggen nog altijd in de grond. DOVO in Poelkapelle had begin 2026 nog 1.609 toxische projectielen in voorraad. Zie <a href="kaart.html#gevaar">Gevaar &amp; munitie</a>.</p>
+<span class="bn">Bron: <a href="https://en.wikipedia.org/wiki/Chemical_weapons_in_World_War_I" target="_blank" rel="noopener">Wikipedia – Chemical weapons in World War I</a> · <a href="https://en.wikipedia.org/wiki/Sulfur_mustard" target="_blank" rel="noopener">Wikipedia – Sulfur mustard</a> · <a href="https://www.vrt.be/vrtnws/nl/2026/03/05/recordaantal-interventies-voor-dovo-in-west-vlaanderen-in-2025-d/" target="_blank" rel="noopener">VRT NWS (maart 2026)</a></span>
+<div class="links"><a class="lk tl" href="tijdlijn.html#j1915">📜 1915</a><a class="lk sim" href="simulatie.html#gas">▶ Gasaanval in de simulatie</a><a class="lk in" href="wistjedat.html#w14">💡 5.730 gasflessen</a><a class="lk in" href="wistjedat.html#w16">💡 Yperiet</a></div></div></section><section class="sec" id="mijnen"><h2>⛏️ Mijnen</h2>
+<div class="box"><p>Britse, Canadese, Australische en Nieuw-Zeelandse tunnelbouwers groeven diepe gangen onder de Duitse linies op de Mesenrug. Ze legden <b>26 mijnen</b> met samen <b>± 454 ton</b> ammonal; op 7 juni 1917 om 3:10 ontploften er <b>19</b> binnen ongeveer 20 seconden. De knal zou tot in Londen en Dublin gehoord zijn ⚠️ (berichten, niet gemeten).</p>
+<div class="bars" role="img" aria-label="Mijnen van Mesen. Eén Birdcage-mijn ontplofte in 1955 door blikseminslag."><div class="bar"><span class="lb">Gelegd</span><span class="tr"><span class="fl " style="display:block;width:100%">26</span></span></div><div class="bar"><span class="lb">Ontploft op 7 juni 1917</span><span class="tr"><span class="fl r" style="display:block;width:73%">19</span></span></div><div class="bar"><span class="lb">Nog in de grond (Birdcage 3× en La Petite Douve)</span><span class="tr"><span class="fl k" style="display:block;width:15%">4</span></span></div></div><p class="cap">Mijnen van Mesen. Eén Birdcage-mijn ontplofte in 1955 door blikseminslag.</p>
+<p>De grootste, onder Spanbroekmolen, bevatte 41.277 kg ammonal op 27 m diepte; de krater is nu de ‘Pool of Peace’. Het oude cijfer van ‘10.000 Duitse doden’ is volgens historicus Simon Jones veel te hoog ⚠️.</p>
+<span class="bn">Bron: <a href="https://en.wikipedia.org/wiki/Mines_in_the_Battle_of_Messines_(1917)" target="_blank" rel="noopener">Wikipedia – Mines in the Battle of Messines (1917)</a> · <a href="https://simonjoneshistorian.com/2017/05/01/lost-mines-of-messines/" target="_blank" rel="noopener">Simon Jones – Lost mines</a></span>
+<div class="links"><a class="lk sim" href="simulatie.html#mesen">▶ Mesen 1917</a><a class="lk tl" href="tijdlijn.html#e-1917-06-07">📜 7 juni 1917</a><a class="lk in" href="kaart.html#gevaar">💣 Niet-ontplofte mijnen op de kaart</a></div></div></section><section class="sec" id="vliegtuigen"><h2>✈️ Vliegtuigen</h2>
+<div class="box"><p>Vliegtuigen fotografeerden de loopgraven (de WOI-luchtfoto’s op de <a href="kaart.html">loopgravenkaart</a> komen daarvan), leidden het artillerievuur en vochten luchtgevechten. Bij Mesen in 1917 steunden ze de aanval rechtstreeks. De Franse piloot Georges Guynemer (53 luchtoverwinningen volgens de gemeente) verdween op 11 september 1917 boven Poelkapelle.</p>
+<span class="bn">Bron: <a href="https://en.wikipedia.org/wiki/Battle_of_Messines_(1917)" target="_blank" rel="noopener">Wikipedia – Battle of Messines (1917)</a> · <a href="https://www.langemark-poelkapelle.be/activiteiten/detail/63/guynemer-monument" target="_blank" rel="noopener">Gemeente Langemark-Poelkapelle – Guynemer</a></span>
+<div class="links"><a class="lk" href="weekendroute.html#guynemer">📍 Guynemer-monument</a></div></div></section><section class="sec" id="echt"><h2>👀 Waar zie je dit in het echt?</h2>
+<div class="box"><ul>
+<li><b>Tank:</b> replica Mark IV met originele tankstukken bij <a href="weekendroute.html#pondfarm">Pondfarm</a>, Langemark (alleen op afspraak).</li>
+<li><b>Bodemvondsten (granaten, geweren, helmen):</b> collectie op <a href="weekendroute.html#varlet">Varlet Farm</a>; <a href="weekendroute.html#iffm">In Flanders Fields Museum</a> in Ieper.</li>
+<li><b>Mijnenoorlog:</b> luisterschachten in <a href="weekendroute.html#bayernwald">Bayernwald</a>; kraters bij <a href="weekendroute.html#bluff">The Bluff</a>; <a href="kaart.html#50.82375,2.92862,16">Hill 60</a> en <a href="kaart.html#50.82242,2.92875,16">Caterpillar-krater</a>.</li>
+<li><b>Gas:</b> <a href="kaart.html#50.89963,2.94066,16">Canadees monument Sint-Juliaan</a> en de <a href="weekendroute.html#langemark">Duitse begraafplaats Langemark</a>, in het gebied van de aanval van 22 april 1915.</li>
+<li><b>Bunkers voor mitrailleurs en staf:</b> <a href="weekendroute.html#zandvoorde">commandobunker Zandvoorde</a>.</li>
+<li><b>Kustartillerie:</b> geschutbeddingen en afstandsmeter van <a href="weekendroute.html#raversyde">Batterij Aachen</a> in Raversyde.</li>
+<li><b>Luchtoorlog:</b> <a href="weekendroute.html#guynemer">Guynemer-monument</a>, Poelkapelle.</li>
+</ul><p class="dicht">💣 Zie je in het veld iets dat op munitie lijkt: <b>niet aanraken, afstand houden, bel 101.</b></p></div></section></main>
+<footer><a href="index.html">🏠 Start</a> · <a href="kaart.html">Loopgravenkaart</a> · <a href="simulatie.html">Simulatie</a> · <a href="tijdlijn.html">Tijdlijn</a> · <a href="verhalen.html">Verhalen</a> · <a href="begrippen.html">Begrippen</a> · <a href="routes.html">Wandelen &amp; fietsen</a> · <a href="praktisch.html">Praktisch</a> · <a href="https://github.com/RvWest67/ieper-loopgravenkaart#readme">Over deze site</a></footer><script>(function(){const top=document.getElementById('top'),secs=[...document.querySelectorAll('section.sec')],chips=[...document.querySelectorAll('.ych')];
+function mark(){const y=top.getBoundingClientRect().bottom+20;let cur=secs[0].id;secs.forEach(s=>{if(s.getBoundingClientRect().top<=y)cur=s.id;});chips.forEach(c=>c.classList.toggle('on',c.dataset.s===cur));}
+addEventListener('scroll',mark,{passive:true});mark();})();</script>
+</body>
+</html>

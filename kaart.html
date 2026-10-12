@@ -135,6 +135,7 @@ input[type=range]{width:100%}
   <p><a href="begrippen.html"><b>📚 Begrippen &amp; legers</b></a>: woordenlijst (sappe, pillbox, yperiet…), wie er vocht en hoe je de begraafplaatsen herkent.</p>
   <p><a href="routes.html"><b>🥾 Wandelen &amp; fietsen</b></a>: tien officiële routes langs het oude front, met toegankelijkheid en kaartjes.</p>
   <p><a href="praktisch.html"><b>🧭 Praktisch</b></a>: openingstijden en prijzen, Last Post, parkeren, bereikbaarheid en eten.</p>
+  <p><a href="wapens.html"><b>🛡️ Wapens &amp; tanks</b></a>: tanks, artillerie, gas en mijnen in cijfers.</p>
   <p><a href="weekendroute.html"><b>🚗 3-daagse route</b></a>: een weekendroute in drie dagen, van Alveringem tot Raversyde (ook als laag op deze kaart).</p>
   <p><a href="programma.html"><b>📅 Dagprogramma’s</b></a>: kant-en-klare dagen met de auto, met tijden, rijafstanden, lunchtips en een rustige variant.</p>
   <p>Een bezoekersgids voor de WOI-plekken rond Ieper. Werkt in de browser van je telefoon; voor ‘Mijn locatie’ moet je locatietoegang geven (werkt het best als de kaart via https wordt geopend).</p>
@@ -390,7 +391,7 @@ const GEV=[
 const gev=L.layerGroup();
 GEV.forEach(g=>{
   const html='<div class="pop"><h3>💣 '+esc(g.naam)+'</h3><span class="badge" style="background:#c92a2a">Gevaar &amp; munitie</span><p>'+g.t+'</p>'+GEV_ADV+
-    '<p class="src">Bron: '+g.b.map(x=>'<a href="'+x[1]+'" target="_blank" rel="noopener">'+esc(x[0])+'</a>').join(' · ')+' · <a href="https://www.ieper.be/oorlogsmunitie" target="_blank" rel="noopener">Stad Ieper – oorlogsmunitie</a></p></div>';
+    '<p><a href="wapens.html#mijnen">⛏️ Mijnen in cijfers</a></p><p class="src">Bron: '+g.b.map(x=>'<a href="'+x[1]+'" target="_blank" rel="noopener">'+esc(x[0])+'</a>').join(' · ')+' · <a href="https://www.ieper.be/oorlogsmunitie" target="_blank" rel="noopener">Stad Ieper – oorlogsmunitie</a></p></div>';
   L.circle([g.lat,g.lng],{radius:g.r,color:'#c92a2a',weight:2,dashArray:'6 5',fillColor:'#c92a2a',fillOpacity:.18}).bindPopup(html,{maxWidth:320}).addTo(gev);
   L.marker([g.lat,g.lng],{title:g.naam,icon:L.divIcon({className:'',iconSize:[26,26],iconAnchor:[13,13],popupAnchor:[0,-12],html:'<div class="wrn" style="background:#212529;border-color:#ffd43b">💣</div>'})}).bindPopup(html,{maxWidth:320, autoPanPaddingTopLeft:[10,70]}).addTo(gev);
 });
