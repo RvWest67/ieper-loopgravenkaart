@@ -113,6 +113,10 @@ input[type=range]{width:100%}
   <div class="note">Dekking historische kaartlagen: <span id="opv">80</span>%</div>
   <input type="range" id="opacity" min="0" max="100" value="80">
 
+  <h2>Gevaar &amp; munitie</h2>
+  <label class="tog"><input type="checkbox" id="tgGev"> 💣 Niet-ontplofte mijnen &amp; DOVO</label>
+  <div class="note">Alleen plekken met een betrouwbare bron, bij benadering. België heeft geen officiële ‘zone rouge’. Munitie gezien? <b>Niet aanraken, afstand houden, bel 101.</b></div>
+
   <h2>Weekendroute (3 dagen)</h2>
   <label class="tog"><input type="checkbox" id="tgWR"> Toon de 3-daagse route</label>
   <div class="row" id="wrRow"></div>
@@ -369,6 +373,29 @@ if (window.WR) {
   tg.onchange = ()=>{ if(tg.checked){ wrAll.addTo(map); if(!/^#[\d.]+,/.test(location.hash)) map.fitBounds(L.latLngBounds(WR.stops.map(p=>[p.lat,p.lng])),{padding:[30,30]}); } else map.removeLayer(wrAll); };
   if (/^#(weekend|wr)/.test(location.hash)) { tg.checked = true; tg.onchange(); }
 } else { document.getElementById('tgWR').disabled = true; }
+
+// ---- Gevaar & munitie (bij benadering; bronnen in de popups) ----
+const GEV_ADV='<p class="enk">⚠️ <b>Veiligheid:</b> blijf op wegen en paden, betreed geen akkers, raak niets aan wat uit de grond komt (ook gifgasgranaten liggen nog in de bodem). Zie je munitie: niet verplaatsen, afstand houden en <b>101</b> bellen (politie; die verwittigt DOVO).</p>';
+const GEV=[
+ {lat:50.73900,lng:2.90800,r:120,naam:'Birdcage-mijnen, Le Pelerin (Ploegsteert)',
+  t:'Vier Britse mijnen (1915–16) onder de Duitse stelling ‘Birdcage’, net ten oosten van Plugstreet Wood. Ze werden in 1917 niet gebruikt en de plannen raakten in 1918 verloren. Eén (nr. 3, de oostelijkste) ontplofte in de zomer van 1955 na blikseminslag; er vielen geen gewonden, de krater is gedempt. ⚠️ Datum: bronnen noemen 17 juli 1955, andere 17 juni. <b>Drie mijnen liggen er nog</b>, ± 18 m diep onder de akkers. Geen afgesloten zone: de cirkel is bij benadering.',
+  b:[['Wikipedia – Mines in the Battle of Messines','https://en.wikipedia.org/wiki/Mines_in_the_Battle_of_Messines_(1917)'],['The Ypres Salient – Birdcage','https://www.theypressalient.com/post/the-birdcage-mines-le-pelerin'],['Simon Jones – Lost mines','https://simonjoneshistorian.com/2017/05/01/lost-mines-of-messines/']]},
+ {lat:50.75572,lng:2.89358,r:100,naam:'Mijn La Petite Douve (Mesen)',
+  t:'Britse mijn van ± 23.000 kg (50.000 lb) onder de hoeve La Petite Douve, ten zuidoosten van Mesen. In augustus 1916 stootten Duitse mijnwerkers erop; de gang liep onder water en de lading werd achtergelaten. Ze ligt er nog. De hoeve is privé. ⚠️ Plek bij benadering (Wikipedia-coördinaten).',
+  b:[['Wikipedia – Mines in the Battle of Messines','https://en.wikipedia.org/wiki/Mines_in_the_Battle_of_Messines_(1917)'],['Simon Jones – Lost mines','https://simonjoneshistorian.com/2017/05/01/lost-mines-of-messines/']]},
+ {lat:50.9520,lng:2.9506,r:450,naam:'DOVO Poelkapelle – militair domein',
+  t:'Basis van DOVO, de ontmijningsdienst van het Belgische leger, in het zuidelijk deel van het bos van Houthulst. Hier wordt WOI-munitie gesorteerd, opgeslagen en vernietigd, ook gifgasgranaten. In 2025 rukte DOVO in West-Vlaanderen ± 2.700 keer uit (record); begin 2026 wachtten in Poelkapelle 8.151 projectielen op vernietiging, waarvan 1.609 toxische. Boeren leggen gevonden obussen aan de rand van hun akker (‘ijzeren oogst’); DOVO haalt ze op na een melding via de politie. <b>Het militair domein is niet toegankelijk.</b> Van ma tot do kan je rond 11:30 en 15:30 gecontroleerde ontploffingen horen (aangekondigd met sirene; volgens de gemeente Houthulst tot half oktober 2026). Cirkel = ontploffingszone volgens OpenStreetMap, bij benadering.',
+  b:[['VRT NWS (maart 2026)','https://www.vrt.be/vrtnws/nl/2026/03/05/recordaantal-interventies-voor-dovo-in-west-vlaanderen-in-2025-d/'],['Inventaris OE – Houthulstbos','https://inventaris.onroerenderfgoed.be/erfgoedobjecten/135148'],['Gemeente Houthulst (sep. 2026)','https://www.houthulst.be/nieuws/gecontroleerde-ontploffingen-bij-dovo'],['Focus-WTV – op pad met DOVO','https://focus-wtv.be/nieuws/meer-dan-100-jaar-na-woi-dovo-haalt-nog-jaarlijks-evenveel-munitie-op']]}
+];
+const gev=L.layerGroup();
+GEV.forEach(g=>{
+  const html='<div class="pop"><h3>💣 '+esc(g.naam)+'</h3><span class="badge" style="background:#c92a2a">Gevaar &amp; munitie</span><p>'+g.t+'</p>'+GEV_ADV+
+    '<p class="src">Bron: '+g.b.map(x=>'<a href="'+x[1]+'" target="_blank" rel="noopener">'+esc(x[0])+'</a>').join(' · ')+' · <a href="https://www.ieper.be/oorlogsmunitie" target="_blank" rel="noopener">Stad Ieper – oorlogsmunitie</a></p></div>';
+  L.circle([g.lat,g.lng],{radius:g.r,color:'#c92a2a',weight:2,dashArray:'6 5',fillColor:'#c92a2a',fillOpacity:.18}).bindPopup(html,{maxWidth:320}).addTo(gev);
+  L.marker([g.lat,g.lng],{title:g.naam,icon:L.divIcon({className:'',iconSize:[26,26],iconAnchor:[13,13],popupAnchor:[0,-12],html:'<div class="wrn" style="background:#212529;border-color:#ffd43b">💣</div>'})}).bindPopup(html,{maxWidth:320, autoPanPaddingTopLeft:[10,70]}).addTo(gev);
+});
+bindToggle('tgGev', gev);
+if (/^#gevaar/.test(location.hash)) { const t=document.getElementById('tgGev'); t.checked=true; t.onchange(); map.fitBounds(L.latLngBounds(GEV.map(g=>[g.lat,g.lng])),{padding:[40,40]}); }
 
 setYear(curYear);
 if (window.innerWidth >= 800) { panel.classList.remove('hidden'); bp.classList.add('on'); }
