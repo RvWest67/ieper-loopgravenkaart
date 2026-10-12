@@ -7,6 +7,7 @@
 <title>Loopgravenkaart Ieperboog 1914–1918</title>
 <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
 <script src="vendor/leaflet/leaflet.js"></script>
+<script src="weekendroute.js"></script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%BA%3C/text%3E%3C/svg%3E">
 <style>
 :root{--bg:#fffdf7;--ink:#2b2b2b;--accent:#8b5a2b;--bar:#3b3222}
@@ -57,6 +58,10 @@ input[type=range]{width:100%}
 .leaflet-top{top:52px}
 #simBtn{position:absolute;z-index:1000;left:10px;bottom:calc(34px + env(safe-area-inset-bottom));background:#8b5a2b;color:#fff;text-decoration:none;font-weight:700;font-size:13.5px;padding:9px 13px;border-radius:20px;box-shadow:0 2px 8px rgba(0,0,0,.35)}
 .lf-hint{background:rgba(255,255,255,.9);padding:3px 7px;border-radius:6px;font-size:12px}
+.wrn{display:flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;color:#fff;font-weight:800;font-size:13px;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.5)}
+.wrx{width:14px;height:14px;border-radius:50%;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.5)}
+.pop .enk{background:#fff4e6;border-left:3px solid #f08c00;padding:4px 7px;font-size:12.5px}
+.pop .src{font-size:11.5px;color:#777}.pop .src a{color:#8b5a2b}
 </style>
 <!--pwa-->
 <link rel="manifest" href="manifest.webmanifest">
@@ -108,6 +113,11 @@ input[type=range]{width:100%}
   <div class="note">Dekking historische kaartlagen: <span id="opv">80</span>%</div>
   <input type="range" id="opacity" min="0" max="100" value="80">
 
+  <h2>Weekendroute (3 dagen)</h2>
+  <label class="tog"><input type="checkbox" id="tgWR"> Toon de 3-daagse route</label>
+  <div class="row" id="wrRow"></div>
+  <div class="note">Genummerde stops per dag, rijroute (OSRM-schatting, zonder verkeer). Uitleg per dag: <a href="weekendroute.html">📅 3-daagse route</a>.</div>
+
   <h2>Plekken</h2>
   <div class="row" id="catRow"></div>
   <div class="note">Tik op een plek voor uitleg, openingsuren (okt 2026) en ‘Navigeer’.</div>
@@ -121,6 +131,7 @@ input[type=range]{width:100%}
   <p><a href="begrippen.html"><b>📚 Begrippen &amp; legers</b></a>: woordenlijst (sappe, pillbox, yperiet…), wie er vocht en hoe je de begraafplaatsen herkent.</p>
   <p><a href="routes.html"><b>🥾 Wandelen &amp; fietsen</b></a>: tien officiële routes langs het oude front, met toegankelijkheid en kaartjes.</p>
   <p><a href="praktisch.html"><b>🧭 Praktisch</b></a>: openingstijden en prijzen, Last Post, parkeren, bereikbaarheid en eten.</p>
+  <p><a href="weekendroute.html"><b>🚗 3-daagse route</b></a>: een weekendroute in drie dagen, van Alveringem tot Raversyde (ook als laag op deze kaart).</p>
   <p><a href="programma.html"><b>📅 Dagprogramma’s</b></a>: kant-en-klare dagen met de auto, met tijden, rijafstanden, lunchtips en een rustige variant.</p>
   <p>Een bezoekersgids voor de WOI-plekken rond Ieper. Werkt in de browser van je telefoon; voor ‘Mijn locatie’ moet je locatietoegang geven (werkt het best als de kaart via https wordt geopend).</p>
   <h3>Historische lagen en bronnen</h3>
@@ -315,6 +326,44 @@ btnLoc.onclick=()=>{
       if(watchId!==null){navigator.geolocation.clearWatch(watchId); watchId=null;} },
   {enableHighAccuracy:true, maximumAge:10000, timeout:20000});
 };
+
+// ---- Weekendroute (3 dagen), gegevens uit weekendroute.js ----
+map.createPane('wr'); map.getPane('wr').style.zIndex = 640;
+const wrAll = L.layerGroup(), wrDay = {};
+if (window.WR) {
+  Object.entries(WR.days).forEach(([d,D])=>{
+    const g = L.layerGroup().addTo(wrAll); wrDay[d]=g;
+    L.polyline(D.line,{color:'#fff',weight:7,opacity:.8,interactive:false}).addTo(g);
+    L.polyline(D.line,{color:D.c,weight:4,opacity:.9}).bindPopup('<b>'+esc(D.t)+'</b><br>Rijden ± '+D.km+' km, ± '+D.min+' min (OSRM-schatting, zonder verkeer)<br><a href="'+D.gm+'" target="_blank" rel="noopener">Open in Google Maps</a>').addTo(g);
+  });
+  WR.stops.forEach(p=>{
+    const D = WR.days[p.d];
+    const icon = L.divIcon({className:'', iconSize:[26,26], iconAnchor:[13,13], popupAnchor:[0,-12],
+      html:'<div class="wrn" style="background:'+D.c+'">'+p.n+'</div>'});
+    const html = '<div class="pop"><h3>'+p.d+'.'+p.n+' '+esc(p.naam)+'</h3><span class="badge" style="background:'+D.c+'">'+esc(D.t)+'</span>'+
+      '<p>'+esc(p.gesch)+'</p><p><b>Te zien:</b> '+esc(p.zien)+'</p><p><b>Praktisch (nagekeken okt. 2026):</b> '+esc(p.prak)+'</p>'+
+      '<p class="enk">🦶 '+esc(p.enkel)+'</p>'+
+      '<p class="src">Bron: '+p.bron.map(b=>'<a href="'+b.u+'"'+(/^https?:/.test(b.u)?' target="_blank" rel="noopener"':'')+'>'+esc(b.t)+'</a>').join(' · ')+'</p>'+
+      '<div class="btns"><a href="https://www.google.com/maps/dir/?api=1&destination='+p.lat+','+p.lng+'" target="_blank" rel="noopener">🧭 Navigeer</a>'+
+      '<a class="sec" href="weekendroute.html#'+p.id+'">📅 Meer</a></div></div>';
+    L.marker([p.lat,p.lng],{icon, pane:'wr', title:p.naam}).bindPopup(html,{maxWidth:320, autoPanPaddingTopLeft:[10,70]}).addTo(wrDay[p.d]);
+  });
+  WR.extra.forEach(x=>{
+    L.marker([x.lat,x.lng],{pane:'wr', title:x.naam, icon:L.divIcon({className:'',iconSize:[14,14],iconAnchor:[7,7],html:'<div class="wrx" style="background:'+WR.days[2].c+'"></div>'})})
+     .bindPopup('<div class="pop"><h3>'+esc(x.naam)+'</h3><span class="badge" style="background:'+WR.days[2].c+'">Dag 2 · begraafplaats in Plugstreet Wood</span><p>'+esc(x.t)+'</p><p class="enk">🦶 Te voet via een onverhard bospad (geen auto’s), vanaf de Rue St-Yvon.</p><p class="src">Bron: <a href="'+x.u+'" target="_blank" rel="noopener">'+esc(x.naam)+'</a></p><div class="btns"><a href="https://www.google.com/maps/dir/?api=1&destination='+x.lat+','+x.lng+'&travelmode=walking" target="_blank" rel="noopener">🧭 Navigeer</a></div></div>',{maxWidth:300})
+     .addTo(wrDay[2]);
+  });
+  const wrRow = document.getElementById('wrRow'), wrOn = {1:true,2:true,3:true};
+  Object.entries(WR.days).forEach(([d,D])=>{
+    const c=document.createElement('span'); c.className='chip on'; c.dataset.d=d;
+    c.innerHTML='<span class="dot" style="background:'+D.c+'"></span>Dag '+d;
+    c.onclick=()=>{ wrOn[d]=!wrOn[d]; c.classList.toggle('on',wrOn[d]); wrOn[d]?wrAll.addLayer(wrDay[d]):wrAll.removeLayer(wrDay[d]); };
+    wrRow.appendChild(c);
+  });
+  const tg = document.getElementById('tgWR');
+  tg.onchange = ()=>{ if(tg.checked){ wrAll.addTo(map); if(!/^#[\d.]+,/.test(location.hash)) map.fitBounds(L.latLngBounds(WR.stops.map(p=>[p.lat,p.lng])),{padding:[30,30]}); } else map.removeLayer(wrAll); };
+  if (/^#(weekend|wr)/.test(location.hash)) { tg.checked = true; tg.onchange(); }
+} else { document.getElementById('tgWR').disabled = true; }
 
 setYear(curYear);
 if (window.innerWidth >= 800) { panel.classList.remove('hidden'); bp.classList.add('on'); }

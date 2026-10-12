@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>3-daagse route · Ieperboog 1914–1918</title>
+<meta name="description" content="Een 3-daagse WOI-route met de auto: van Alveringem via Ieper, de Mesenrug en Ploegsteert tot Poelkapelle en Raversyde. Met achtergrond, praktische info, kaart en bronnen.">
+<meta name="theme-color" content="#3b3222">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%BA%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="vendor/leaflet/leaflet.css">
+<script src="vendor/leaflet/leaflet.js"></script>
+<script src="weekendroute.js"></script>
+<style>
+:root{--bg:#fffdf7;--ink:#2b2b2b;--accent:#8b5a2b;--bar:#3b3222;--poppy:#c92a2a}
+*{box-sizing:border-box}
+html.sm{scroll-behavior:smooth}
+html,body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+#top{position:sticky;top:0;z-index:50;background:var(--bar);color:#fff;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+#bar{display:flex;align-items:center;gap:6px;padding:calc(6px + env(safe-area-inset-top)) 8px 6px}
+#bar h1{font-size:15px;margin:0;flex:1;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#bar h1 small{display:block;font-weight:400;font-size:11px;opacity:.8}
+.tbtn{background:#fff;color:var(--bar);border:0;border-radius:18px;padding:7px 11px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;text-decoration:none;display:inline-block}
+.tbtn.home{padding:7px 9px}
+.row{display:flex;gap:6px;overflow-x:auto;padding:0 8px 7px;scrollbar-width:none}
+.row::-webkit-scrollbar{display:none}
+.ych{flex:0 0 auto;color:#fff;text-decoration:none;font-weight:700;font-size:13px;padding:5px 11px;border-radius:15px;border:1.5px solid rgba(255,255,255,.35)}
+.ych.on{background:var(--poppy);border-color:var(--poppy)}
+main{max-width:720px;margin:0 auto;padding:10px 12px 20px}
+.intro{font-size:14px;line-height:1.5;color:#444;margin:6px 2px}
+section.sec{scroll-margin-top:96px}
+section.sec>h2{font-size:21px;color:var(--accent);margin:22px 0 8px;padding:0 2px 4px;border-bottom:2px solid #e4d9c6}
+.ic{font-size:22px;line-height:1}
+.leg{font-size:13px;background:#fff4e6;border-left:3px solid #f08c00;padding:6px 9px;margin:8px 0 0;line-height:1.45}
+.links{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;align-items:center}
+.vbl{font-size:12.5px;color:#666}
+.lk{font-size:12.5px;text-decoration:none;background:#f3e6d6;color:var(--bar);border-radius:12px;padding:5px 10px;font-weight:600}
+.lk.tl{background:#ece5fd}.lk.sim{background:#fde4e1}.lk.vh{background:#e3f4e6}.lk.in{background:#eef0f2}
+.bn{display:block;font-size:11.5px;color:#888;margin-top:7px}
+.bn a{color:var(--accent);text-decoration:none;margin-right:2px}
+.flash{animation:flash 2.2s ease-out}
+@keyframes flash{0%{box-shadow:0 0 0 4px var(--poppy)}100%{box-shadow:0 1px 4px rgba(59,50,34,.08)}}
+.hid{display:none!important}
+.note{font-size:12.5px;color:#666;line-height:1.5}
+footer{text-align:center;font-size:12px;color:#777;padding:10px 16px calc(24px + env(safe-area-inset-bottom))}
+footer a{color:var(--accent)}
+@media (prefers-reduced-motion: reduce){html.sm{scroll-behavior:auto}.flash{animation:none}}
+.bd{display:inline-block;font-size:12px;font-weight:700;border-radius:10px;padding:3px 8px;background:#f1f3f5;color:#333;white-space:nowrap}
+.bd.makkelijk{background:#d3f9d8;color:#1b5e20}.bd.gemiddeld{background:#fff3bf;color:#7a5b00}.bd.pittig{background:#ffe3e3;color:#a51111}
+.ic{font-size:22px;line-height:1}
+.off{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+.box{background:#fbf5ee;border:1px solid #e4d9c6;border-radius:12px;padding:10px 13px;margin:6px 0 12px;font-size:14px;line-height:1.55}
+.box h3{margin:0 0 4px;font-size:16px;color:var(--bar)}
+.rent{background:#fff;border:1px solid #e4d9c6;border-left:5px solid #1c7ed6;border-radius:12px;padding:9px 12px;margin:0 0 8px}
+.rent b{font-size:15px;color:var(--bar)}
+.rent .ad{font-size:12.5px;color:#666}
+.rent p{font-size:13.5px;margin:4px 0;line-height:1.45}
+.rent a{font-size:13px;color:var(--accent);font-weight:600;word-break:break-word}
+
+
+.box ul{margin:4px 0 0;padding-left:20px}
+.box li{margin:3px 0}
+.box .bn{display:inline;margin:0}
+.box p{margin:4px 0}
+.tw{margin:6px 0 10px}
+table.pt{border-collapse:collapse;width:100%;font-size:13.5px;line-height:1.45;background:#fff}
+table.pt th,table.pt td{border:1px solid #e4d9c6;padding:6px 8px;vertical-align:top;text-align:left}
+table.pt thead th{background:var(--bar);color:#fff;font-size:12.5px}
+table.pt tbody th{color:var(--bar);font-size:14px}
+table.pt .bn{display:block;margin-top:4px}
+.lks{margin-top:5px;font-weight:400}
+@media (max-width:700px){
+ table.pt thead{display:none}
+ table.pt,table.pt tbody,table.pt tr,table.pt th,table.pt td{display:block;width:100%}
+ table.pt tr{border:1px solid #e4d9c6;border-left:5px solid var(--accent);border-radius:12px;margin:0 0 10px;padding:8px 11px;box-shadow:0 1px 4px rgba(59,50,34,.08);background:#fff}
+ table.pt th,table.pt td{border:0;padding:3px 0}
+ table.pt tbody th{font-size:16px;padding-bottom:4px}
+ table.pt td::before{content:attr(data-l);display:block;font-size:11.5px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.02em}
+}
+.big{font-size:15px;line-height:1.55}
+.nr{display:grid;grid-template-columns:auto 1fr;gap:6px 10px;align-items:baseline;font-size:14px}
+.nr b{font-size:20px;color:var(--poppy);text-align:right}
+.ok{color:#2b8a3e;font-weight:700}.no{color:var(--poppy);font-weight:700}
+.stamp{display:inline-block;font-size:12px;font-weight:700;background:#d3f9d8;color:#1b5e20;border-radius:10px;padding:3px 9px;margin:2px 0 4px}
+
+
+.leaflet-container{font:inherit}
+.leaflet-popup-content{margin:9px 11px;font-size:13px;line-height:1.4}
+.phead{background:#fff;border:1px solid #e4d9c6;border-left:5px solid var(--accent);border-radius:12px;padding:10px 13px;margin:6px 0 10px;box-shadow:0 1px 4px rgba(59,50,34,.08)}
+.phead .sub{font-size:13px;color:#666;font-weight:600}
+.phead p{font-size:14px;line-height:1.5;margin:6px 0}
+.sum{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.mapbox{height:260px;border-radius:12px;border:1px solid #e4d9c6;margin:8px 0 4px;background:#eef0f2;z-index:1}
+.mcap{font-size:11.5px;color:#888;margin:0 2px 10px}
+.num{display:flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--bar);color:#fff;font-weight:800;font-size:12px;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.4)}
+.num.s{background:#2f9e44}
+.nicon{background:none;border:0}
+ol.tline{list-style:none;margin:6px 0 10px;padding:0}
+ol.tline li.st{position:relative;background:#fff;border:1px solid #e4d9c6;border-radius:12px;padding:9px 12px 9px 50px;margin:0;box-shadow:0 1px 4px rgba(59,50,34,.06)}
+ol.tline li.st .num{position:absolute;left:12px;top:10px}
+.tm{display:inline-block;font-weight:800;color:var(--poppy);font-size:14px;margin-right:4px;font-variant-numeric:tabular-nums}
+.st b.tt{font-size:15px;color:var(--bar)}
+.du{display:inline-block;font-size:12px;font-weight:700;background:#f1f3f5;border-radius:10px;padding:2px 8px;margin-left:4px;white-space:nowrap}
+.st p{font-size:13.5px;line-height:1.45;margin:4px 0 0}
+li.lg{font-size:12.5px;color:#555;padding:5px 0 5px 22px;margin-left:11px;border-left:3px dotted #c9b89d}
+li.lg.foot{border-left-style:dashed}
+li.lg .wait{color:#2b8a3e;font-weight:600}
+.lunch{background:#fff9db;border-radius:9px;padding:6px 9px;margin-top:6px;font-size:13px;line-height:1.45}
+.lunch .alt{display:block;margin-top:4px;color:#555}
+.dicht{background:#fff5f5;border-left:4px solid var(--poppy);border-radius:10px;padding:8px 11px;margin:8px 0;font-size:13.5px;line-height:1.5}
+.dicht ul,.rust ul{margin:3px 0 0;padding-left:18px}
+.rust{background:#ebfbee;border-left:4px solid #2f9e44;border-radius:10px;padding:8px 11px;margin:8px 0;font-size:13.5px;line-height:1.5}
+.rust h3,.dicht h3{margin:0 0 3px;font-size:15px;color:var(--bar)}
+.gbtn{display:inline-block;background:#1c7ed6;color:#fff;text-decoration:none;font-weight:700;font-size:13px;border-radius:16px;padding:7px 12px}
+.gbtn.alt{background:#2f9e44}
+.sd{font-size:13.5px;line-height:1.5;margin:5px 0 0}.sd b{color:var(--accent)}
+.enk{background:#fff4e6;border-left:3px solid #f08c00;border-radius:8px;padding:5px 8px;font-size:13px;margin:6px 0 0}
+.dn{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;color:#fff;font-weight:800;font-size:12px;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.4)}
+.src{font-size:11.5px;color:#888;margin-top:6px}.src a{color:var(--accent)}
+
+<!--pwa-->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Ieperboog 14–18"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>#offtoast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom));z-index:2000;max-width:min(92vw,520px);background:#212529;color:#fff;font:13px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;border-radius:12px;padding:9px 34px 9px 12px;box-shadow:0 3px 12px rgba(0,0,0,.35)}#offtoast button{position:absolute;right:6px;top:5px;background:none;border:0;color:#fff;font-size:18px;cursor:pointer}</style>
+<script>
+(function(){
+  if('serviceWorker' in navigator && (location.protocol==='https:'||/^(localhost|127\.0\.0\.1)$/.test(location.hostname))) addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+  function toast(on){ let t=document.getElementById('offtoast');
+    if(!on){ if(t) t.remove(); return; } if(t||!document.body) return;
+    t=document.createElement('div'); t.id='offtoast'; t.setAttribute('role','status');
+    t.innerHTML='📴 <b>Offline</b>: je bekijkt de bewaarde versie.'+(document.getElementById('map')||window.L?' Kaarttegels die je eerder bekeek, blijven zichtbaar; luchtfoto’s en erfgoedlagen hebben internet nodig.':'')+'<button type="button" aria-label="Sluiten">×</button>';
+    t.querySelector('button').onclick=()=>t.remove(); document.body.appendChild(t); }
+  addEventListener('offline',()=>toast(true)); addEventListener('online',()=>toast(false));
+  document.addEventListener('DOMContentLoaded',()=>{ if(navigator.onLine===false) toast(true); });
+})();
+</script>
+<!--/pwa-->
+</head>
+<body>
+<div id="top">
+  <div id="bar">
+    <a class="tbtn home" href="index.html" title="Naar het startmenu" aria-label="Home / menu">🏠</a>
+    <h1>3-daagse route<small>Weekend langs het WOI-front</small></h1>
+    <a class="tbtn" href="kaart.html#weekend">🗺 Kaart</a>
+  </div>
+  <nav class="row" id="srow" aria-label="Dagen">
+    <a class="ych" href="#overzicht" data-s="overzicht">ℹ️ Overzicht</a>
+    <a class="ych" href="#dag1" data-s="dag1">🏛️ Dag 1</a>
+    <a class="ych" href="#dag2" data-s="dag2">💥 Dag 2</a>
+    <a class="ych" href="#dag3" data-s="dag3">🕊️ Dag 3</a>
+    <a class="ych" href="#bronnen" data-s="bronnen">Bronnen</a>
+  </nav>
+</div>
+<main>
+  <section class="sec" id="overzicht">
+  <p class="intro"><span class="stamp">✔ Nagekeken okt. 2026</span><br>Een voorbeeldroute van drie dagen met de auto, met dertien stops: van Alveringem achter het oude IJzerfront tot Raversyde aan zee. Volgorde en verblijfsduur zijn suggesties; rijafstanden zijn een eigen routeschatting (OSRM op OpenStreetMap-data, zonder verkeer). Openingsuren zijn alleen vermeld als een bron ze geeft; check ze vóór vertrek. ⚠️ = niet (volledig) nagekeken.</p>
+  <div class="enk"><b>🦶 Wandelen en enkels:</b> de route is grotendeels vlak en de meeste stops liggen vlak bij de parking. Uitzonderingen: <b>The Bluff</b> (onverharde bospaden en kraterranden, vaak modderig), <b>Bayernwald</b> (ongelijke loopgraafvloer) en het <b>bospad naar de begraafplaatsen in Plugstreet Wood</b>. Stevige, waterdichte schoenen aanbevolen.</div>
+  <div class="links"><a class="gbtn" href="kaart.html#weekend">🗺 Alle stops op de loopgravenkaart</a><a class="lk in" href="programma.html">📅 Andere dagprogramma’s</a><a class="lk in" href="praktisch.html">🧭 Praktisch</a></div>
+  </section>
+
+  <section class="sec" id="dag1">
+    <h2>🏛️ Dag 1 · Westhoek, Ieper &amp; Passendale</h2>
+    <div class="phead" style="border-left-color:#1971c2"><span class="sub">Auto · 5 stops</span><p>Van een miniatuurfront achter de IJzer naar een Duitse commandobunker, kort het museum in Ieper, ’s avonds de Last Post en tot slot een boerderij op het slagveld van Passendale met een collectie bodemvondsten.</p><div class="sum"><span class="bd">🚗 ± 63,9 km · ± 80 min rijden tussen de stops</span></div>
+      <div class="links"><a class="gbtn" href="https://www.google.com/maps/dir/51.01273,2.71026/50.80882,2.98544/50.85104,2.8856/50.85203,2.89108/50.90608,2.98415" target="_blank" rel="noopener">🧭 Dag 1 in Google Maps ↗</a><a class="lk map" href="kaart.html#weekend">📍 Op de loopgravenkaart</a></div></div>
+    <div class="mapbox" data-d="1" role="img" aria-label="Kaartje dag 1 met genummerde stops"></div>
+    <p class="mcap">Genummerd zoals hieronder · lijn = rijroute (schatting).</p>
+    <ol class="tline">
+<li class="st" id="miniatuur"><span class="num" style="background:#1971c2" aria-hidden="true">1</span><b class="tt">Expo Miniatuur Front 14-18</b> <span class="vbl">· Alveringem</span>
+<p class="sd"><b>Waarom hier?</b> Permanente tentoonstelling over ‘de Groote Oorlog in ’t klein’: meer dan 100 zelfgemaakte miniaturen, maquettes en diorama’s. Alveringem lag in 1914–1918 achter het Belgische IJzerfront, in onbezet België.</p><p class="sd"><b>Te zien:</b> Maquettes en diorama’s van het front; volgens de gemeente ook een bibliotheek, modelbouwatelier en ‘belevingscafé’. Rolstoeltoegankelijk.</p><p class="sd"><b>Praktisch:</b> Volgens de gemeente (update 16 sep. 2026): vanaf oktober 2026 vr–zo 10:00–18:00 of op afspraak; ma–do dus dicht. Prijs: niet gevonden, navragen (0468 56 31 41). Eigen website nog niet actief. Dorp 26, Alveringem.</p><p class="enk">🦶 Binnen, vlak.</p>
+<div class="links"><a class="lk map" href="kaart.html#51.01273,2.71026,16">📍 Kaart</a><a class="lk" href="https://www.google.com/maps/dir/?api=1&amp;destination=51.01273,2.71026" target="_blank" rel="noopener">🧭 Navigeer</a><a class="lk tl" href="tijdlijn.html#j1914">📜 1914: het IJzerfront</a></div><div class="src">Bron: <a href="https://www.alveringem.be/musea" target="_blank" rel="noopener">Gemeente Alveringem – Musea</a></div></li>
+<li class="lg">🚗 41,5 km · ± 46 min rijden <span class="vbl">(schatting)</span></li>
+<li class="st" id="zandvoorde"><span class="num" style="background:#1971c2" aria-hidden="true">2</span><b class="tt">Duitse commandobunker Zandvoorde</b> <span class="vbl">· Zandvoorde (Zonnebeke)</span>
+<p class="sd"><b>Waarom hier?</b> Een van de grootste nog bestaande bunkers van de Westhoek, in 1916 gebouwd door het Duitse Armierungsbataillon 27 voor de staf van een regiment in de Duitse tweede linie. Boven de ingang staan nog het bouwjaar en de eenheid. Ze lag tot het bevrijdingsoffensief van 1918 achter de Duitse linies; in 1987 vrijgemaakt, sinds 1999 beschermd monument.</p><p class="sd"><b>Te zien:</b> Halfondergrondse betonbunker tegen een heuvelflank, met gevisualiseerde toegangsloopgraven (2016) en een infopaneel. Sinds 30 aug. 2024 is de bunker gedeeltelijk gesloten: hij bewaart tijdelijk de 15 kisten uit de Heldencrypte van Zonnebeke, die gerestaureerd wordt.</p><p class="sd"><b>Praktisch:</b> Buitenkant vrij te bekijken. Binnenkant: gedeeltelijk dicht zolang de crypte-restauratie loopt (werken volgens de gemeente tot ten minste 13 nov. 2026). Gaverstraat, Zandvoorde.</p><p class="enk">🦶 Kort stuk door een weide; kan nat zijn.</p>
+<div class="links"><a class="lk map" href="kaart.html#50.80882,2.98544,16">📍 Kaart</a><a class="lk" href="https://www.google.com/maps/dir/?api=1&amp;destination=50.80882,2.98544" target="_blank" rel="noopener">🧭 Navigeer</a><a class="lk sim" href="simulatie.html#bevrijding">▶ Bevrijding 1918</a><a class="lk tl" href="tijdlijn.html#j1918">📜 1918</a></div><div class="src">Bron: <a href="https://www.toerismezonnebeke.be/nl/zien-en-doen/commandobunker-zandvoorde/" target="_blank" rel="noopener">Toerisme Zonnebeke</a> · <a href="https://inventaris.onroerenderfgoed.be/erfgoedobjecten/201182" target="_blank" rel="noopener">Inventaris Onroerend Erfgoed</a> · <a href="http://wo1.be/nl/nieuws/65747/zonnebeke-krijgt-erfgoedpremie-voor-unieke-heldencrypte" target="_blank" rel="noopener">WO1.be – Heldencrypte (apr. 2026)</a> · <a href="https://www.zonnebeke.be/nieuws/tvr-werken-heldencrypte/" target="_blank" rel="noopener">Gemeente Zonnebeke – werken crypte</a></div></li>
+<li class="lg">🚗 10,4 km · ± 15 min rijden <span class="vbl">(schatting)</span></li>
+<li class="st" id="iffm"><span class="num" style="background:#1971c2" aria-hidden="true">3</span><b class="tt">In Flanders Fields Museum (kort bezoek)</b> <span class="vbl">· Ieper</span>
+<p class="sd"><b>Waarom hier?</b> Het museum in de herbouwde Lakenhalle vertelt de oorlog in de Westhoek via persoonlijke verhalen van soldaten en burgers. De naam komt van het gedicht van John McCrae (mei 1915).</p><p class="sd"><b>Te zien:</b> Vaste tentoonstelling; reken voor een kort bezoek op ± 1 uur (volledig 1,5–2 uur).</p><p class="sd"><b>Praktisch:</b> Okt. 2026: dagelijks 10:00–17:30, ticketverkoop tot 16:30. Volw. €12, 60+ €10,50. Online een tijdslot reserveren aanbevolen. Parkeren: zie Praktisch.</p><p class="enk">🦶 Binnen, vlak.</p>
+<div class="links"><a class="lk map" href="kaart.html#50.85104,2.8856,16">📍 Kaart</a><a class="lk" href="https://www.google.com/maps/dir/?api=1&amp;destination=50.85104,2.8856" target="_blank" rel="noopener">🧭 Navigeer</a><a class="lk vh" href="verhalen.html#mccrae">📖 McCrae</a><a class="lk in" href="wistjedat.html#w24">💡 In Flanders Fields</a></div><div class="src">Bron: <a href="https://www.inflandersfields.be" target="_blank" rel="noopener">In Flanders Fields Museum</a> · <a href="praktisch.html#musea">Praktisch (deze gids)</a></div></li>
+<li class="lg">🚗 1,1 km · ± 3 min rijden <span class="vbl">(schatting)</span></li>
+<li class="st" id="menenpoort"><span class="num" style="background:#1971c2" aria-hidden="true">4</span><b class="tt">Last Post aan de Menenpoort</b> <span class="vbl">· Ieper</span>
+<p class="sd"><b>Waarom hier?</b> Herdenkingspoort (1927) met ruim 54.000 namen van Commonwealth-soldaten zonder gekend graf. Sinds 1928 (onderbroken tijdens WOII) blaast de Last Post Association hier elke avond de Last Post.</p><p class="sd"><b>Te zien:</b> De ceremonie (± 15 min) onder de poort; daarna de vestingwallen.</p><p class="sd"><b>Praktisch:</b> Elke avond om 20:00, gratis, zonder reservatie. Vaak staat er om 19:15 al veel volk.</p><p class="enk">🦶 Staan op straatniveau, vlak.</p>
+<div class="links"><a class="lk map" href="kaart.html#50.85203,2.89108,16">📍 Kaart</a><a class="lk" href="https://www.google.com/maps/dir/?api=1&amp;destination=50.85203,2.89108" target="_blank" rel="noopener">🧭 Navigeer</a><a class="lk vh" href="verhalen.html#lastpost">📖 Last Post</a><a class="lk in" href="wistjedat.html#w28">💡 Elke avond om acht uur</a><a class="lk in" href="wistjedat.html#w29">💡 Te klein</a></div><div class="src">Bron: <a href="https://www.lastpost.be" target="_blank" rel="noopener">Last Post Association</a> · <a href="praktisch.html#lastpost">Praktisch (deze gids)</a></div></li>
+<li class="lg">🚗 10,9 km · ± 16 min rijden <span class="vbl">(schatting)</span></li>
+<li class="st" id="varlet"><span class="num" style="background:#1971c2" aria-hidden="true">5</span><b class="tt">Varlet Farm</b> <span class="vbl">· Poelkapelle (Passendale)</span>
+<p class="sd"><b>Waarom hier?</b> Boerderij midden op het slagveld van Passendale (1917), nu een B&amp;B. In de schuur ligt een collectie WOI-voorwerpen die op het eigen land werden gevonden.</p><p class="sd"><b>Te zien:</b> Collectie bodemvondsten (o.a. geweren, helmen, granaatscherven), een tentoonstelling over de Royal Naval Division en een WOI-bibliotheek (volgens de beschrijving van de B&amp;B). Op de velden rond Passendale vindt men nog altijd munitie: die wordt opgehaald door DOVO, de ontmijningsdienst van het Belgische leger, met een basis in Poelkapelle.</p><p class="sd"><b>Praktisch:</b> Privéterrein (B&amp;B), geen openbaar museum: neem vooraf contact op via varletfarm.com. Wallemolenstraat 43, Poelkapelle.</p><p class="enk">🦶 Erf en schuur; niet nagekeken.</p>
+<div class="links"><a class="lk map" href="kaart.html#50.90608,2.98415,16">📍 Kaart</a><a class="lk" href="https://www.google.com/maps/dir/?api=1&amp;destination=50.90608,2.98415" target="_blank" rel="noopener">🧭 Navigeer</a><a class="lk sim" href="simulatie.html#passendale">▶ Passendale 1917</a><a class="lk in" href="wistjedat.html#w12">💡 De ijzeroogst</a><a class="lk in" href="wistjedat.html#w13">💡 Nog altijd gevaarlijk</a></div><div class="src">Bron: <a href="https://www.varletfarm.com/en/index.htm" target="_blank" rel="noopener">Varlet Farm</a> · <a href="https://www.charmio.com/en/bed-breakfast/varlet-farm-poelkapelle" target="_blank" rel="noopener">Charmio – beschrijving</a> · <a href="https://kw.be/nieuws/samenleving/dovo-bestaat-100-jaar-maar-is-nog-lang-niet-klaar-we-halen-nog-elk-jaar-165-ton-explosieven-uit-de-grond/" target="_blank" rel="noopener">KW.be – DOVO 100 jaar</a></div></li>
+</ol>
+  </section>
+
+  <section class="sec" id="dag2">
+    <h2>💥 Dag 2 · Zuid: Bluff, Mesenrug &amp; Ploegsteert</h2>
+    <div class="phead" style="border-left-color:#e8590c"><span class="sub">Auto · 5 stops</span><p>De zuidkant van de Ieperboog: mijnkraters bij The Bluff, Duitse loopgraven in Bayernwald, de namen in Ploegsteert, het kerstbestand van 1914 en drie kleine begraafplaatsen in Plugstreet Wood. Eindig bij de Duitse begraafplaats van Langemark.</p><div class="sum"><span class="bd">🚗 ± 43,5 km · ± 70 min rijden tussen de stops</span></div>
+      <div class="links"><a class="gbtn" href="https://www.google.com/maps/dir/50.8148,2.9158/50.80143,2.87752/50.73783,2.88212/50.74442,2.90254/50.92045,2.91693" target="_blank" rel="noopener">🧭 Dag 2 in Google Maps ↗</a><a class="lk map" href="kaart.html#weekend">📍 Op de loopgravenkaart</a></div></div>
+    <div class="mapbox" data-d="2" role="img" aria-label="Kaartje dag 2 met genummerde stops"></div>
+    <p class="mcap">Genummerd zoals hieronder · lijn = rijroute (schatting) · kleine stippen = begraafplaatsen in Plugstreet Wood (te voet).</p>
+    <ol class="tline">
+<li class="st" id="bluff"><span class="num" style="background:#e8590c" aria-hidden="true">1</span><b class="tt">The Bluff (Palingbeek)</b> <span class="vbl">· Zillebeke/Hollebeke</span>
+<p class="sd"><b>Waarom hier?</b> Kunstmatige hoogte van grond die bij het graven van het kanaal Ieper–Komen was opgeworpen, en dus een zeldzaam uitkijkpunt. Van eind 1915 tot december 1916 een brandpunt van loopgraaf- en mijnenoorlog (‘Actions of the Bluff’, 1916): ongeveer 14 mijnen lieten zeven kraters na. Duitse kraters van 14 feb. en 25 juli 1916; de laatste Britse mijn ontplofte op 11 dec. 1916.</p><p class="sd"><b>Te zien:</b> Mijnkraters, resten van bunkers en granaattrechters in het bos van het Provinciedomein De Palingbeek, met de kanaaldijk.</p><p class="sd"><b>Praktisch:</b> Vrij toegankelijk, gratis. Parkeren bij het Provinciedomein De Palingbeek.</p><p class="enk">🦶 ⚠️ Onverharde bospaden en kraterranden: ongelijk en vaak modderig. Stevige schoenen.</p>
+<div class="links"><a class="lk map" href="kaart.html#50.8148,2.9158,16">📍 Kaart</a><a class="lk" href="https://www.google.com/maps/dir/?api=1&amp;destination=50.8148,2.9158" target="_blank" rel="noopener">🧭 Navigeer</a><a class="lk sim" href="simulatie.html#stelooi1916">▶ Sint-Elooi 1916</a><a class="lk in" href="wistjedat.html#w7">💡 Hill 60 is geen echte heuvel</a><a class="lk in" href="routes.html#r-palingbeek">🥾 Route Palingbeek</a></div><div class="src">Bron: <a href="https://inventaris.onroerenderfgoed.be/erfgoedobjecten/304167" target="_blank" rel="noopener">Inventaris OE – Mijnkraters Palingbeek</a> · <a href="https://inventaris.onroerenderfgoed.be/erfgoedobjecten/305360" target="_blank" rel="noopener">Inventaris OE – Oorlogslandschap Palingbeek</a></div></li>
+<li class="lg">🚗 8,4 km · ± 19 min rijden <span class="vbl">(schatting)</span></li>
+<li class="st" id="bayernwald"><span class="num" style="background:#e8590c" aria-hidden="true">2</span><b class="tt">Bayernwald (Croonaert)</b> <span class="vbl">· Wijtschate</span>
+<p class="sd"><b>Waarom hier?</b> Duitse stelling in het Croonaertbos, in 1914 op de Fransen veroverd en ‘Bayernwald’ genoemd. Met loopgraven, bunkers en luisterschachten waarmee de Duitsers Britse mijngangen probeerden af te luisteren. Ging verloren bij de Slag om Mesen (7 juni 1917). Deels gereconstrueerd op basis van archeologisch onderzoek.</p><p class="sd"><b>Te zien:</b> Gereconstrueerde Duitse loopgraven, betonbunkers en mijnschachten (± 45 min).</p><p class="sd"><b>Praktisch:</b> Okt. 2026: dagelijks 9:00–17:00 (gesloten op za 24 okt.). €5, jongeren &lt;25 €2. Ticket vooraf via de webshop van Toerisme Heuvelland of aan de balie in Kemmel. Voormezelestraat 2.</p><p class="enk">🦶 ⚠️ Loopgraafvloer en paden zijn ongelijk; stevige schoenen.</p>
+<div class="links"><a class="lk map" href="kaart.html#50.80143,2.87752,16">📍 Kaart</a><a class="lk" href="https://www.google.com/maps/dir/?api=1&amp;destination=50.80143,2.87752" target="_blank" rel="noopener">🧭 Navigeer</a><a class="lk sim" href="simulatie.html#mesen">▶ Mesen 1917</a><a class="lk tl" href="tijdlijn.html#e-1917-06-07">📜 7 juni 1917</a><a class="lk vh" href="verhalen.html#g-mesen">📖 Verhalen Mesen</a></div><div class="src">Bron: <a href="https://www.toerismeheuvelland.be/nl/bayernwald-nl" target="_blank" rel="noopener">Toerisme Heuvelland</a> · <a href="praktisch.html#musea">Praktisch (deze gids)</a></div></li>
+<li class="lg">🚗 9,6 km · ± 13 min rijden <span class="vbl">(schatting)</span></li>
+<li class="st" id="plugstreet"><span class="num" style="background:#e8590c" aria-hidden="true">3</span><b class="tt">Ploegsteert Memorial &amp; Plugstreet 14-18 Experience</b> <span class="vbl">· Ploegsteert (Komen-Waasten)</span>
+<p class="sd"><b>Waarom hier?</b> Het CWGC-gedenkteken (1931) bij Berks Cemetery Extension draagt de namen van ruim 11.000 Commonwealth-soldaten zonder gekend graf uit de sector Ploegsteert–Armentières (CWGC: 11.395). Het museum ernaast vertelt over de Australiërs, het kerstbestand van 1914 en Winston Churchill, die hier in 1916 een bataljon leidde.</p><p class="sd"><b>Te zien:</b> Rond gedenkteken met twee leeuwen, twee begraafplaatsen en het interactieve museum (± 1 uur).</p><p class="sd"><b>Praktisch:</b> Memorial: altijd open, gratis. Museum okt. 2026: di–zo 10:00–17:00, laatste toegang 16:00, ma dicht. Volw. €9, 60+ €7. Rue de Messines 156. Wallonië: Franstalig.</p><p class="enk">🦶 Vlak.</p>
+<div class="links"><a class="lk map" href="kaart.html#50.73783,2.88212,16">📍 Kaart</a><a class="lk" href="https://www.google.com/maps/dir/?api=1&amp;destination=50.73783,2.88212" target="_blank" rel="noopener">🧭 Navigeer</a><a class="lk vh" href="verhalen.html#g-ploeg">📖 Verhalen Ploegsteert</a></div><div class="src">Bron: <a href="https://www.cwgc.org/visit-us/find-cemeteries-memorials/cemetery-details/88800/ploegsteert-memorial/" target="_blank" rel="noopener">CWGC – Ploegsteert Memorial</a> · <a href="https://www.plugstreet1418.be" target="_blank" rel="noopener">Plugstreet 14-18</a> · <a href="praktisch.html#musea">Praktisch (deze gids)</a></div></li>
+<li class="lg">🚗 1,7 km · ± 3 min rijden <span class="vbl">(schatting)</span></li>
+<li class="st" id="kerst"><span class="num" style="background:#e8590c" aria-hidden="true">4</span><b class="tt">Kerstbestand: ‘Khaki Chums’-kruis &amp; UEFA-monument</b> <span class="vbl">· Saint-Yvon, Ploegsteert</span>
+<p class="sd"><b>Waarom hier?</b> Rond Kerstmis 1914 legden Britse en Duitse soldaten hier en elders aan het front even de wapens neer. Een houten kruis van de ‘Khaki Chums’ (1999) staat ± 150 m voorbij Prowse Point Cemetery; ernaast staat het monument dat de UEFA op 11 dec. 2014 liet onthullen (Michel Platini). Dat hier gevoetbald werd is een overlevering; dit was niet de enige plek van het bestand.</p><p class="sd"><b>Te zien:</b> Kruis, UEFA-monument met teksten in de vloer en twee aangelegde loopgraven; Prowse Point Military Cemetery ernaast.</p><p class="sd"><b>Praktisch:</b> Vrij toegankelijk, gratis. Chemin du Mont de la Hutte / Christmas Truce-weg.</p><p class="enk">🦶 Kort, grotendeels vlak; gras kan nat zijn.</p>
+<p class="sd"><b>Drie begraafplaatsen in Plugstreet Wood</b> (CWGC; te voet via een onverhard bospad zonder auto’s, vanaf de Rue St-Yvon):</p><ul class="sd"><li><a href="https://www.cwgc.org/visit-us/find-cemeteries-memorials/cemetery-details/9903/toronto-avenue-cemetery/" target="_blank" rel="noopener">Toronto Avenue Cemetery</a>: 78 Australiërs (9th Brigade), gesneuveld 7–10 juni 1917 bij Mesen.</li><li><a href="https://en.wikipedia.org/wiki/Ploegsteert_Wood_Military_Commonwealth_War_Graves_Commission_Cemetery" target="_blank" rel="noopener">Ploegsteert Wood Military Cemetery</a>: 164 graven.</li><li><a href="https://www.ww1cemeteries.com/rifle-house-cemetery.html" target="_blank" rel="noopener">Rifle House Cemetery</a>: 230 graven, vooral Britten.</li></ul>
+<div class="links"><a class="lk map" href="kaart.html#50.74442,2.90254,16">📍 Kaart</a><a class="lk" href="https://www.google.com/maps/dir/?api=1&amp;destination=50.74442,2.90254" target="_blank" rel="noopener">🧭 Navigeer</a><a class="lk vh" href="verhalen.html#kerstbestand">📖 Het kerstbestand</a><a class="lk tl" href="tijdlijn.html#e-1914-12-25">📜 Kerstmis 1914</a><a class="lk in" href="wistjedat.html#w25">💡 Voetbal in niemandsland?</a></div><div class="src">Bron: <a href="http://wo1.be/nl/db-items/houten-kruis-the-khaki-chums-christmas-truce" target="_blank" rel="noopener">WO1.be – houten kruis</a> · <a href="http://www.wo1.be/nl/jewaserbij/6694/monument-christmas-truce" target="_blank" rel="noopener">WO1.be – monument 2014</a> · <a href="https://kw.be/nieuws/michel-platini-onthult-monument-dat-kerstbestand-herinnert-in-ploegsteert/" target="_blank" rel="noopener">KW.be (2014)</a></div></li>
+<li class="lg">🚗 23,9 km · ± 35 min rijden <span class="vbl">(schatting)</span></li>
+<li class="st" id="langemark"><span class="num" style="background:#e8590c" aria-hidden="true">5</span><b class="tt">Duitse militaire begraafplaats Langemark</b> <span class="vbl">· Langemark</span>
+<p class="sd"><b>Waarom hier?</b> Een van de vier Duitse WOI-begraafplaatsen in Vlaanderen, met ruim 44.000 doden, van wie bijna 25.000 in een massagraf (Kameradengrab). De aanvallen van oktober–november 1914 werden in Duitsland de mythe van ‘Langemarck’.</p><p class="sd"><b>Te zien:</b> Eiken, liggende naamplaten, het beeld van vier rouwende soldaten en een onthaalpaviljoen. UNESCO-werelderfgoed.</p><p class="sd"><b>Praktisch:</b> Dagelijks, gratis. Parking aan de Klerkenstraat.</p><p class="enk">🦶 Vlak, grind en gras.</p>
+<div class="links"><a class="lk map" href="kaart.html#50.92045,2.91693,16">📍 Kaart</a><a class="lk" href="https://www.google.com/maps/dir/?api=1&amp;destination=50.92045,2.91693" target="_blank" rel="noopener">🧭 Navigeer</a><a class="lk vh" href="verhalen.html#langemark">📖 Langemark</a><a class="lk in" href="wistjedat.html#w33">💡 Een massagraf</a><a class="lk sim" href="simulatie.html#nov1914">▶ Eerste Ieper 1914</a></div><div class="src">Bron: <a href="https://www.langemark-poelkapelle.be/de-duitse-militaire-begraafplaats" target="_blank" rel="noopener">Gemeente Langemark-Poelkapelle</a> · <a href="praktisch.html#musea">Praktisch (deze gids)</a></div></li>
+</ol>
+  </section>
+
+  <section class="sec" id="dag3">
+    <h2>🕊️ Dag 3 · Poelkapelle &amp; de kust</h2>
+    <div class="phead" style="border-left-color:#2f9e44"><span class="sub">Auto · 3 stops</span><p>Een privécollectie met een replica-tank, het monument voor de Franse piloot Guynemer en tot slot de kust: Batterij Aachen (WOI) tussen de WOII-bunkers van Raversyde.</p><div class="sum"><span class="bd">🚗 ± 47,2 km · ± 59 min rijden tussen de stops</span></div>
+      <div class="links"><a class="gbtn" href="https://www.google.com/maps/dir/50.88545,2.94711/50.91764,2.95655/51.20066,2.84721" target="_blank" rel="noopener">🧭 Dag 3 in Google Maps ↗</a><a class="lk map" href="kaart.html#weekend">📍 Op de loopgravenkaart</a></div></div>
+    <div class="mapbox" data-d="3" role="img" aria-label="Kaartje dag 3 met genummerde stops"></div>
+    <p class="mcap">Genummerd zoals hieronder · lijn = rijroute (schatting).</p>
+    <ol class="tline">
+<li class="st" id="pondfarm"><span class="num" style="background:#2f9e44" aria-hidden="true">1</span><b class="tt">Pondfarm (privécollectie &amp; replica-tank)</b> <span class="vbl">· Langemark (Sint-Juliaan)</span>
+<p class="sd"><b>Waarom hier?</b> Werkende boerderij met een privécollectie WOI-vondsten. In 2012 werden in de buurt een stuk rupsband en een zijplaat van een Britse Mark IV-tank gevonden; de eigenaar sloot aan bij de groep die de replica-tank van Poelkapelle bouwde (Poelcapelle 1917 Association).</p><p class="sd"><b>Te zien:</b> Rondleiding (± 1 uur) door vrijwilligers: munitiekooi, een bunker, de replica-tank en de collectie met originele tankstukken.</p><p class="sd"><b>Praktisch:</b> Enkel op afspraak, alleen online reserveren via de kalender (telefonisch niet bereikbaar). Prijs: vrije gift. Geen toiletten. Parking op de binnenkoer. Roeselarestraat 7, 8920 Langemark. ⚠️ Niet in Wulvergem: de CWGC-begraafplaats ‘Pond Farm Cemetery’ daar is iets anders.</p><p class="enk">🦶 Erf; niet nagekeken.</p>
+<div class="links"><a class="lk map" href="kaart.html#50.88545,2.94711,16">📍 Kaart</a><a class="lk" href="https://www.google.com/maps/dir/?api=1&amp;destination=50.88545,2.94711" target="_blank" rel="noopener">🧭 Navigeer</a><a class="lk sim" href="simulatie.html#poelkapelle1917">▶ Poelkapelle 1917</a><a class="lk tl" href="tijdlijn.html#j1917">📜 1917</a></div><div class="src">Bron: <a href="https://depondfarm.be/nl/bezoek" target="_blank" rel="noopener">Pondfarm – bezoek</a> · <a href="https://www.depondfarm.be/nl/inleiding" target="_blank" rel="noopener">Pondfarm – inleiding</a> · <a href="https://www.depondfarm.be/nl/contact1" target="_blank" rel="noopener">Pondfarm – reserveren</a></div></li>
+<li class="lg">🚗 5,9 km · ± 9 min rijden <span class="vbl">(schatting)</span></li>
+<li class="st" id="guynemer"><span class="num" style="background:#2f9e44" aria-hidden="true">2</span><b class="tt">Guynemer-monument</b> <span class="vbl">· Poelkapelle</span>
+<p class="sd"><b>Waarom hier?</b> Eerbetoon aan de Franse gevechtspiloot Georges Guynemer (53 luchtoverwinningen volgens de gemeente). Op 11 sep. 1917 verdween hij boven Poelkapelle; zijn lichaam werd nooit teruggevonden. Belgische vliegeniers lieten het monument oprichten; onthuld op 8 juli 1923.</p><p class="sd"><b>Te zien:</b> Hoge zuil met een bronzen ooievaar, symbool van zijn ‘Escadrille des Cigognes’, een bronzen medaillon met zijn portret en zijn laatste dagorder. Beschermd monument (2009).</p><p class="sd"><b>Praktisch:</b> Altijd vrij te bekijken, gratis. Guynemerplein, midden in Poelkapelle.</p><p class="enk">🦶 Vlak (dorpsplein).</p>
+<div class="links"><a class="lk map" href="kaart.html#50.91764,2.95655,16">📍 Kaart</a><a class="lk" href="https://www.google.com/maps/dir/?api=1&amp;destination=50.91764,2.95655" target="_blank" rel="noopener">🧭 Navigeer</a><a class="lk sim" href="simulatie.html#mmp1917">▶ Herfst 1917</a></div><div class="src">Bron: <a href="https://www.langemark-poelkapelle.be/activiteiten/detail/63/guynemer-monument" target="_blank" rel="noopener">Gemeente Langemark-Poelkapelle</a> · <a href="https://inventaris.onroerenderfgoed.be/erfgoedobjecten/44136" target="_blank" rel="noopener">Inventaris Onroerend Erfgoed</a></div></li>
+<li class="lg">🚗 41,3 km · ± 50 min rijden <span class="vbl">(schatting)</span></li>
+<li class="st" id="raversyde"><span class="num" style="background:#2f9e44" aria-hidden="true">3</span><b class="tt">Atlantikwall Raversyde (Batterij Aachen)</b> <span class="vbl">· Oostende</span>
+<p class="sd"><b>Waarom hier?</b> Openluchtmuseum in de duinen, vooral over de Duitse Atlantikwall uit WOII. Maar hier ligt ook Batterij Aachen (WOI): gebouwd vanaf 8 jan. 1915, operationeel eind april 1915, volgens het museum de enige Duitse kustbatterij uit WOI waarvan genoeg overblijft voor een volledig beeld. Prins Karel liet het domein ongemoeid, waardoor alles bewaard bleef.</p><p class="sd"><b>Te zien:</b> Vier geschutbeddingen, observatiebunkers met originele afstandsmeter, een stuk loopgraaf en schuilplaats (WOI), plus bunkers en gangen uit WOII.</p><p class="sd"><b>Praktisch:</b> T/m 15 nov. 2026; in het weekend 10:30–18:00, laatste toegang 16:15; ma dicht. Volw. €10, 6–17 j. €4. Nieuwpoortsesteenweg 636.</p><p class="enk">🦶 Buitensite in de duinen met bunkers: reken op een flinke wandeling (paden niet nagekeken).</p>
+<div class="links"><a class="lk map" href="kaart.html#51.20066,2.84721,16">📍 Kaart</a><a class="lk" href="https://www.google.com/maps/dir/?api=1&amp;destination=51.20066,2.84721" target="_blank" rel="noopener">🧭 Navigeer</a><a class="lk tl" href="tijdlijn.html#j1915">📜 1915</a></div><div class="src">Bron: <a href="https://www.raversyde.be/nl/praktische-info/openingsuren-en-kalender" target="_blank" rel="noopener">Raversyde – openingsuren</a> · <a href="https://www.raversyde.be/nl/atlantikwall-raversyde/atlantikwall/batterij-aachen" target="_blank" rel="noopener">Raversyde – Batterij Aachen</a> · <a href="https://www.raversyde.be/nl/tickets" target="_blank" rel="noopener">Raversyde – tickets</a></div></li>
+</ol>
+  </section>
+
+  <section class="sec" id="bronnen">
+    <h2>Bronnen &amp; wat niet is nagekeken</h2>
+    <div class="box"><ul>
+      <li>⚠️ <b>Expo Miniatuur Front 14-18</b>: openingsuren alleen via de gemeente Alveringem (eigen website nog niet actief); geen prijs gevonden.</li>
+      <li>⚠️ <b>Varlet Farm</b> is een privé-B&amp;B; of en wanneer de collectie voor niet-gasten open is, staat niet online. De inhoud van de collectie komt uit beschrijvingen van derden.</li>
+      <li>⚠️ <b>Commandobunker Zandvoorde</b>: gedeeltelijk dicht zolang de kisten van de Heldencrypte er bewaard worden; geen einddatum gevonden.</li>
+      <li>⚠️ <b>The Bluff</b>: er is geen bezoekerscentrum; de parking is die van het Provinciedomein De Palingbeek.</li>
+      <li>⚠️ Ondergrond van paden (behalve waar een bron iets zegt) is een algemene inschatting.</li>
+      <li><b>Pondfarm</b> ligt in Langemark (Roeselarestraat 7), niet in Wulvergem.</li>
+    </ul></div>
+    <ol class="note"><li><a href="https://www.alveringem.be/musea" target="_blank" rel="noopener">Gemeente Alveringem – Musea</a></li><li><a href="https://www.toerismezonnebeke.be/nl/zien-en-doen/commandobunker-zandvoorde/" target="_blank" rel="noopener">Toerisme Zonnebeke</a></li><li><a href="https://inventaris.onroerenderfgoed.be/erfgoedobjecten/201182" target="_blank" rel="noopener">Inventaris Onroerend Erfgoed</a></li><li><a href="http://wo1.be/nl/nieuws/65747/zonnebeke-krijgt-erfgoedpremie-voor-unieke-heldencrypte" target="_blank" rel="noopener">WO1.be – Heldencrypte (apr. 2026)</a></li><li><a href="https://www.zonnebeke.be/nieuws/tvr-werken-heldencrypte/" target="_blank" rel="noopener">Gemeente Zonnebeke – werken crypte</a></li><li><a href="https://www.inflandersfields.be" target="_blank" rel="noopener">In Flanders Fields Museum</a></li><li><a href="https://www.lastpost.be" target="_blank" rel="noopener">Last Post Association</a></li><li><a href="https://www.varletfarm.com/en/index.htm" target="_blank" rel="noopener">Varlet Farm</a></li><li><a href="https://www.charmio.com/en/bed-breakfast/varlet-farm-poelkapelle" target="_blank" rel="noopener">Charmio – beschrijving</a></li><li><a href="https://kw.be/nieuws/samenleving/dovo-bestaat-100-jaar-maar-is-nog-lang-niet-klaar-we-halen-nog-elk-jaar-165-ton-explosieven-uit-de-grond/" target="_blank" rel="noopener">KW.be – DOVO 100 jaar</a></li><li><a href="https://inventaris.onroerenderfgoed.be/erfgoedobjecten/304167" target="_blank" rel="noopener">Inventaris OE – Mijnkraters Palingbeek</a></li><li><a href="https://inventaris.onroerenderfgoed.be/erfgoedobjecten/305360" target="_blank" rel="noopener">Inventaris OE – Oorlogslandschap Palingbeek</a></li><li><a href="https://www.toerismeheuvelland.be/nl/bayernwald-nl" target="_blank" rel="noopener">Toerisme Heuvelland</a></li><li><a href="https://www.cwgc.org/visit-us/find-cemeteries-memorials/cemetery-details/88800/ploegsteert-memorial/" target="_blank" rel="noopener">CWGC – Ploegsteert Memorial</a></li><li><a href="https://www.plugstreet1418.be" target="_blank" rel="noopener">Plugstreet 14-18</a></li><li><a href="http://wo1.be/nl/db-items/houten-kruis-the-khaki-chums-christmas-truce" target="_blank" rel="noopener">WO1.be – houten kruis</a></li><li><a href="http://www.wo1.be/nl/jewaserbij/6694/monument-christmas-truce" target="_blank" rel="noopener">WO1.be – monument 2014</a></li><li><a href="https://kw.be/nieuws/michel-platini-onthult-monument-dat-kerstbestand-herinnert-in-ploegsteert/" target="_blank" rel="noopener">KW.be (2014)</a></li><li><a href="https://www.cwgc.org/visit-us/find-cemeteries-memorials/cemetery-details/9903/toronto-avenue-cemetery/" target="_blank" rel="noopener">Toronto Avenue Cemetery</a></li><li><a href="https://en.wikipedia.org/wiki/Ploegsteert_Wood_Military_Commonwealth_War_Graves_Commission_Cemetery" target="_blank" rel="noopener">Ploegsteert Wood Military Cemetery</a></li><li><a href="https://www.ww1cemeteries.com/rifle-house-cemetery.html" target="_blank" rel="noopener">Rifle House Cemetery</a></li><li><a href="https://www.langemark-poelkapelle.be/de-duitse-militaire-begraafplaats" target="_blank" rel="noopener">Gemeente Langemark-Poelkapelle</a></li><li><a href="https://depondfarm.be/nl/bezoek" target="_blank" rel="noopener">Pondfarm – bezoek</a></li><li><a href="https://www.depondfarm.be/nl/inleiding" target="_blank" rel="noopener">Pondfarm – inleiding</a></li><li><a href="https://www.depondfarm.be/nl/contact1" target="_blank" rel="noopener">Pondfarm – reserveren</a></li><li><a href="https://www.langemark-poelkapelle.be/activiteiten/detail/63/guynemer-monument" target="_blank" rel="noopener">Gemeente Langemark-Poelkapelle</a></li><li><a href="https://inventaris.onroerenderfgoed.be/erfgoedobjecten/44136" target="_blank" rel="noopener">Inventaris Onroerend Erfgoed</a></li><li><a href="https://www.raversyde.be/nl/praktische-info/openingsuren-en-kalender" target="_blank" rel="noopener">Raversyde – openingsuren</a></li><li><a href="https://www.raversyde.be/nl/atlantikwall-raversyde/atlantikwall/batterij-aachen" target="_blank" rel="noopener">Raversyde – Batterij Aachen</a></li><li><a href="https://www.raversyde.be/nl/tickets" target="_blank" rel="noopener">Raversyde – tickets</a></li><li>Rijroutes: <a href="https://project-osrm.org" target="_blank" rel="noopener">OSRM</a> op © OpenStreetMap-bijdragers; coördinaten via Nominatim/OpenStreetMap.</li></ol>
+  </section>
+</main>
+<footer><a href="index.html">🏠 Start</a> · <a href="kaart.html">Loopgravenkaart</a> · <a href="simulatie.html">Simulatie</a> · <a href="tijdlijn.html">Tijdlijn</a> · <a href="verhalen.html">Verhalen</a> · <a href="begrippen.html">Begrippen</a> · <a href="routes.html">Wandelen &amp; fietsen</a> · <a href="praktisch.html">Praktisch</a> · <a href="https://github.com/RvWest67/ieper-loopgravenkaart#readme">Over deze site</a></footer>
+<script>
+(function(){
+  const top=document.getElementById('top'), secs=[...document.querySelectorAll('section.sec')], chips=[...document.querySelectorAll('.ych')];
+  function mark(){ const y=top.getBoundingClientRect().bottom+20; let cur=secs[0].id;
+    secs.forEach(s=>{ if(s.getBoundingClientRect().top<=y) cur=s.id; });
+    chips.forEach(c=>c.classList.toggle('on',c.dataset.s===cur)); }
+  addEventListener('scroll',mark,{passive:true}); mark();
+  if(!window.WR||!window.L) return;
+  document.querySelectorAll('.mapbox').forEach(el=>{
+    const d=el.dataset.d, D=WR.days[d];
+    const m=L.map(el,{scrollWheelZoom:false,dragging:!L.Browser.mobile,tap:false});
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>-bijdragers'}).addTo(m);
+    L.polyline(D.line,{color:D.c,weight:4,opacity:.85}).addTo(m);
+    WR.stops.filter(p=>String(p.d)===d).forEach(p=>L.marker([p.lat,p.lng],{title:p.naam,icon:L.divIcon({className:'nicon',iconSize:[24,24],iconAnchor:[12,12],html:'<span class="dn" style="background:'+D.c+'">'+p.n+'</span>'})})
+      .bindPopup('<b>'+p.n+'. '+p.naam+'</b><br><a href="#'+p.id+'">Lees meer</a>').addTo(m));
+    if(d==='2') WR.extra.forEach(x=>L.circleMarker([x.lat,x.lng],{radius:5,color:'#fff',weight:2,fillColor:D.c,fillOpacity:1}).bindPopup('<b>'+x.naam+'</b>').addTo(m));
+    m.fitBounds(L.latLngBounds(D.line),{padding:[18,18]});
+  });
+})();
+</script>
+</body>
+</html>
