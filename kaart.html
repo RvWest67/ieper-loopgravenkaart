@@ -349,9 +349,14 @@ if (window.WR) {
     L.marker([p.lat,p.lng],{icon, pane:'wr', title:p.naam}).bindPopup(html,{maxWidth:320, autoPanPaddingTopLeft:[10,70]}).addTo(wrDay[p.d]);
   });
   WR.extra.forEach(x=>{
-    L.marker([x.lat,x.lng],{pane:'wr', title:x.naam, icon:L.divIcon({className:'',iconSize:[14,14],iconAnchor:[7,7],html:'<div class="wrx" style="background:'+WR.days[2].c+'"></div>'})})
-     .bindPopup('<div class="pop"><h3>'+esc(x.naam)+'</h3><span class="badge" style="background:'+WR.days[2].c+'">Dag 2 · begraafplaats in Plugstreet Wood</span><p>'+esc(x.t)+'</p><p class="enk">🦶 Te voet via een onverhard bospad (geen auto’s), vanaf de Rue St-Yvon.</p><p class="src">Bron: <a href="'+x.u+'" target="_blank" rel="noopener">'+esc(x.naam)+'</a></p><div class="btns"><a href="https://www.google.com/maps/dir/?api=1&destination='+x.lat+','+x.lng+'&travelmode=walking" target="_blank" rel="noopener">🧭 Navigeer</a></div></div>',{maxWidth:300})
-     .addTo(wrDay[2]);
+    const c=WR.days[2].c;
+    const html='<div class="pop"><h3>2.'+x.sub+' '+esc(x.naam)+'</h3><span class="badge" style="background:'+c+'">Dag 2 · Plugstreet Wood (te voet vanaf stop 4)</span>'+
+      '<p>'+esc(x.gesch)+'</p><p><b>Te zien:</b> '+esc(x.zien)+'</p><p><b>Praktisch:</b> '+esc(x.prak)+'</p><p class="enk">🦶 '+esc(x.enkel)+'</p>'+
+      '<p class="src">Bron: '+x.bron.map(b=>'<a href="'+b.u+'" target="_blank" rel="noopener">'+esc(b.t)+'</a>').join(' · ')+'</p>'+
+      '<div class="btns"><a href="https://www.google.com/maps/dir/?api=1&destination='+x.lat+','+x.lng+'&travelmode=walking" target="_blank" rel="noopener">🚶 Navigeer</a><a class="sec" href="weekendroute.html#'+x.id+'">📅 Meer</a></div></div>';
+    L.marker([x.lat,x.lng],{pane:'wr', title:x.naam, icon:L.divIcon({className:'',iconSize:[24,24],iconAnchor:[12,12],popupAnchor:[0,-11],
+      html:'<div class="wrn" style="background:'+c+';width:24px;height:24px;font-size:10px">'+x.sub+'</div>'})})
+     .bindPopup(html,{maxWidth:320, autoPanPaddingTopLeft:[10,70]}).addTo(wrDay[2]);
   });
   const wrRow = document.getElementById('wrRow'), wrOn = {1:true,2:true,3:true};
   Object.entries(WR.days).forEach(([d,D])=>{
