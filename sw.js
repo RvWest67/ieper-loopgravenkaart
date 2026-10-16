@@ -1,10 +1,10 @@
 /* Service worker Ieperboog 14–18 – offline gebruik.
    Versie wordt bij elke build automatisch afgeleid uit de inhoud van de bestanden. */
-const VERSION = '539e7f45de';
+const VERSION = 'cdfca57308';
 const PAGES = 'ieper-pages-' + VERSION;
 const TILES = 'ieper-tiles';          // alleen bekeken OSM-tegels, geen bulk-download
 const MAX_TILES = 2500;
-const FILES = ["./", "index.html", "kaart.html", "simulatie.html", "tijdlijn.html", "verhalen.html", "begrippen.html", "routes.html", "praktisch.html", "programma.html", "weekendroute.html", "weekendroute.js", "wapens.html", "routes.js", "wistjedat.html", "ww1-ieper.kml", "manifest.webmanifest", "icon.svg", "icon-maskable.svg", "qr.svg", "vendor/leaflet/leaflet.js", "vendor/leaflet/leaflet.css"];
+const FILES = ["./", "index.html", "kaart.html", "simulatie.html", "tijdlijn.html", "verhalen.html", "begrippen.html", "routes.html", "praktisch.html", "programma.html", "weekendroute.html", "weekendroute.js", "wapens.html", "routes.js", "wistjedat.html", "ieper.html", "ieper.js", "ww1-ieper.kml", "manifest.webmanifest", "icon.svg", "icon-maskable.svg", "qr.svg", "vendor/leaflet/leaflet.js", "vendor/leaflet/leaflet.css"];
 
 self.addEventListener('install', ev => {
   ev.waitUntil(caches.open(PAGES).then(c => c.addAll(FILES.map(u => new Request(u, {cache: 'reload'})))).then(() => self.skipWaiting()));
