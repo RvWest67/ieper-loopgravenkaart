@@ -1,6 +1,6 @@
 /* Service worker Ieperboog 14–18 – offline gebruik.
    Versie wordt bij elke build automatisch afgeleid uit de inhoud van de bestanden. */
-const VERSION = 'cdfca57308';
+const VERSION = 'cdfca57309';
 const PAGES = 'ieper-pages-' + VERSION;
 const TILES = 'ieper-tiles';          // alleen bekeken OSM-tegels, geen bulk-download
 const MAX_TILES = 2500;
