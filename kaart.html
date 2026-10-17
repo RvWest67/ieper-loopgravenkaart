@@ -64,15 +64,18 @@ input[type=range]{width:100%}
 .wrn{display:flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;color:#fff;font-weight:800;font-size:13px;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.5)}
 .wrx{width:14px;height:14px;border-radius:50%;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.5)}
 .pop .enk{background:#fff4e6;border-left:3px solid #f08c00;padding:4px 7px;font-size:12.5px}
-.rotc{display:flex;flex-direction:column;background:#fff;border-radius:10px;box-shadow:0 1px 5px rgba(0,0,0,.4);overflow:hidden}
-.rotc button{width:44px;height:38px;border:0;border-bottom:1px solid #ddd;background:#fff;color:#3b3222;font-size:19px;line-height:1;cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center}
-.rotc button:last-child{border-bottom:0}
-.rotc button:active{background:#f3e6d6}
-.rotc #rcN{height:52px;flex-direction:column;gap:1px}
-.rotc #rcN svg{width:26px;height:26px;transition:transform .15s linear}
-.rotc #rcN span{font-size:10px;font-weight:700;color:#555}
-.rotc #rcF.on{background:#ffd43b}
-.rotc.follow #rcN svg{transition:none}
+.tbtn.cmp{padding:2px 6px;min-width:36px;height:32px;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:0;line-height:1}
+.tbtn.cmp svg{width:17px;height:17px;transition:transform .15s linear}
+.tbtn.cmp span{font-size:9px;font-weight:700;color:#555}
+.tbtn.cmp.follow{background:#ffd43b}.tbtn.cmp.follow svg{transition:none}
+.tbtn.cmp.open{box-shadow:0 0 0 2px #ffd43b}
+#rotMenu{position:absolute;z-index:1100;right:8px;top:calc(50px + env(safe-area-inset-top));display:none;gap:6px;align-items:center;background:#fff;border-radius:12px;padding:6px;box-shadow:0 3px 12px rgba(0,0,0,.35)}
+#rotMenu.show{display:flex}
+#rotMenu button{height:38px;min-width:42px;border:1.5px solid #ddd;border-radius:10px;background:#fff;color:#3b3222;font-size:18px;font-weight:600;cursor:pointer;padding:0 8px;white-space:nowrap}
+#rotMenu button:active{background:#f3e6d6}
+#rotMenu #rcF{font-size:13px}
+#rotMenu #rcF.on{background:#ffd43b;border-color:#f0b400}
+#rotMenu #rcN{font-size:13px}
 .pop .src{font-size:11.5px;color:#777}.pop .src a{color:#8b5a2b}
 </style>
 <!--pwa-->
@@ -99,10 +102,17 @@ input[type=range]{width:100%}
   <a class="tbtn home" href="index.html" title="Naar het startmenu" aria-label="Home / menu">🏠</a>
   <h1>Ieperboog 14–18<small>Loopgravenkaart WOI</small></h1>
   <button class="tbtn" id="btnLoc" title="Toon mijn locatie" aria-label="Mijn locatie">📍<span class="lbl"> Mijn locatie</span></button>
+  <button class="tbtn cmp" id="btnRot" type="button" title="Kaartrichting (draaien, kompas)" aria-label="Kaartrichting" aria-haspopup="true" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1 17.5 12h-11z" fill="#c92a2a"/><path d="M12 23 6.5 12h11z" fill="#adb5bd"/></svg><span id="rcDeg">N</span></button>
   <button class="tbtn" id="btnPanel">☰ Lagen</button>
   <button class="tbtn" id="btnInfo" aria-label="Info">ⓘ</button>
 </div>
 <div id="toast"></div>
+<div id="rotMenu" role="menu" aria-label="Kaartrichting">
+  <button id="rcN" type="button" title="Noorden boven" aria-label="Noorden boven zetten">⬆ N</button>
+  <button id="rcL" type="button" title="Kaart 15° naar links draaien" aria-label="Kaart naar links draaien">↺</button>
+  <button id="rcR" type="button" title="Kaart 15° naar rechts draaien" aria-label="Kaart naar rechts draaien">↻</button>
+  <button id="rcF" type="button" title="Volg kompas: kaart draait mee met je telefoon" aria-label="Volg kompas">🧭 Volg</button>
+</div>
 <a id="simBtn" href="simulatie.html">▶ Simulatie 1914–1918</a>
 
 <div id="panel" class="hidden">
@@ -116,7 +126,7 @@ input[type=range]{width:100%}
   <div class="note">Boven op het scherm: <b id="rotTxt">0° (N)</b></div>
   <input type="range" id="rotSl" min="0" max="359" step="1" value="0" aria-label="Kaartrichting in graden">
   <label class="tog"><input type="checkbox" id="tgCompass"> 🧭 Volg kompas (telefoon)</label>
-  <div class="note">Draai de kaart zodat ze overeenkomt met wat je in het veld ziet. Tik op de noordpijl om het noorden weer boven te zetten.</div>
+  <div class="note">Draai de kaart zodat ze overeenkomt met wat je in het veld ziet. Het kompas bovenaan toont de richting; via dat kompas zet je met ‘⬆ N’ het noorden weer boven.</div>
 
   <h2>Frontlijn</h2>
   <div class="row" id="yearRow"></div>
@@ -165,7 +175,7 @@ input[type=range]{width:100%}
   <p><a href="ieper.html"><b>🏛️ Bezienswaardig in Ieper</b></a>: wat je te voet in de stad zelf ziet, met wandellus (ook als laag op deze kaart).</p>
   <p><a href="weekendroute.html"><b>🚗 3-daagse route</b></a>: een weekendroute in drie dagen, van Alveringem tot Raversyde (ook als laag op deze kaart).</p>
   <p><a href="programma.html"><b>📅 Dagprogramma’s</b></a>: kant-en-klare dagen met de auto, met tijden, rijafstanden, lunchtips en een rustige variant.</p>
-  <p><b>🧭 Kaart draaien:</b> gebruik ↺/↻ linksboven of de schuifbalk onder ☰ Lagen; tik op de noordpijl voor noorden boven. Met ‘🧭 Volg kompas’ draait de kaart mee met de richting waarin je telefoon wijst.</p>
+  <p><b>🧭 Kaart draaien:</b> tik op het kompas in de balk bovenaan (↺/↻, ‘⬆ N’ voor noorden boven) of gebruik de schuifbalk onder ☰ Lagen. Met ‘🧭 Volg kompas’ draait de kaart mee met de richting waarin je telefoon wijst.</p>
   <p>Een bezoekersgids voor de WOI-plekken rond Ieper. Werkt in de browser van je telefoon; voor ‘Mijn locatie’ moet je locatietoegang geven (werkt het best als de kaart via https wordt geopend).</p>
   <h3>Historische lagen en bronnen</h3>
   <ul>
@@ -484,20 +494,19 @@ if (window.IEPER) {
   const canRot = typeof map.setBearing==='function' && map._rotate;
   const DIRS=['N','NO','O','ZO','Z','ZW','W','NW'];
   const norm=a=>((a%360)+360)%360;
-  const ctl=L.control({position:'topleft'});
-  ctl.onAdd=()=>{ const d=L.DomUtil.create('div','rotc');
-    d.innerHTML='<button id="rcN" type="button" title="Noorden boven" aria-label="Noorden boven zetten"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 17 12H7z" fill="#c92a2a"/><path d="M12 22 7 12h10z" fill="#adb5bd"/><text x="12" y="10.5" font-size="5.5" text-anchor="middle" fill="#fff" font-weight="700" font-family="sans-serif">N</text></svg><span id="rcDeg">N</span></button>'+
-      '<button id="rcL" type="button" title="Kaart 15° naar links draaien" aria-label="Kaart naar links draaien">↺</button>'+
-      '<button id="rcR" type="button" title="Kaart 15° naar rechts draaien" aria-label="Kaart naar rechts draaien">↻</button>'+
-      '<button id="rcF" type="button" title="Volg kompas: kaart draait mee met je telefoon" aria-label="Volg kompas">🧭</button>';
-    L.DomEvent.disableClickPropagation(d); L.DomEvent.disableScrollPropagation(d); return d; };
-  ctl.addTo(map);
+  const btnRot=document.getElementById('btnRot'), menu=document.getElementById('rotMenu');
+  function menuShow(on){ menu.classList.toggle('show',on); btnRot.classList.toggle('open',on); btnRot.setAttribute('aria-expanded',on?'true':'false'); }
+  btnRot.onclick=e=>{ e.stopPropagation(); menuShow(!menu.classList.contains('show')); };
+  menu.addEventListener('click',e=>e.stopPropagation());
+  document.addEventListener('click',()=>menuShow(false));
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape') menuShow(false); });
+  map.on('dragstart zoomstart',()=>menuShow(false));
   const el=id=>document.getElementById(id);
   const sl=el('rotSl'), tg=el('tgCompass');
   // kijkrichting = kompasrichting die boven op het scherm staat; bearing van de kaart = 360 - kijkrichting
   const heading=()=>canRot?norm(360-map.getBearing()):0;
   function ui(){ const h=Math.round(heading())%360, b=canRot?map.getBearing():0;
-    el('rcN').querySelector('svg').style.transform='rotate('+b+'deg)';
+    btnRot.querySelector('svg').style.transform='rotate('+b+'deg)';
     el('rcDeg').textContent = h===0?'N':h+'°';
     el('rotTxt').textContent = h+'° ('+DIRS[Math.round(h/45)%8]+')';
     if(document.activeElement!==sl) sl.value=h; }
@@ -526,14 +535,14 @@ if (window.IEPER) {
   function listen(){
     evName=('ondeviceorientationabsolute' in window)?'deviceorientationabsolute':'deviceorientation';
     window.addEventListener(evName,onOri,true);
-    following=true; cur=null; gotData=false; el('rcF').classList.add('on'); tg.checked=true; document.querySelector('.rotc').classList.add('follow');
-    toast('🧭 Kaart volgt je kompas. Houd je telefoon plat; tik op de noordpijl om te stoppen.',4000);
+    following=true; cur=null; gotData=false; el('rcF').classList.add('on'); tg.checked=true; btnRot.classList.add('follow');
+    toast('🧭 Kaart volgt je kompas. Houd je telefoon plat; tik op het kompas bovenaan en dan op ‘🧭 Volg’ om te stoppen.',4000);
     clearTimeout(wd); wd=setTimeout(()=>{ if(following&&!gotData){ stopFollow(); toast('Geen kompasgegevens ontvangen. Je toestel of browser ondersteunt dit niet (op een computer werkt het niet).',5000); } },3500);
   }
   function stopFollow(){ if(!following) return; following=false; clearTimeout(wd);
     if(evName) window.removeEventListener(evName,onOri,true);
     el('rcF').classList.remove('on'); tg.checked=false;
-    const c=document.querySelector('.rotc'); if(c) c.classList.remove('follow'); }
+    btnRot.classList.remove('follow'); }
   function startFollow(){
     if(!canRot){ toast('Draaien wordt in deze browser niet ondersteund.'); tg.checked=false; return; }
     if(!('DeviceOrientationEvent' in window)){ toast('Je toestel of browser heeft geen kompas.'); tg.checked=false; return; }
