@@ -7,6 +7,7 @@
 <title>Loopgravenkaart Ieperboog 1914–1918</title>
 <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
 <script src="vendor/leaflet/leaflet.js"></script>
+<script src="vendor/leaflet-rotate/leaflet-rotate.js"></script>
 <script src="weekendroute.js"></script>
 <script src="ieper.js"></script>
 <script src="routes.js"></script>
@@ -63,6 +64,15 @@ input[type=range]{width:100%}
 .wrn{display:flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;color:#fff;font-weight:800;font-size:13px;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.5)}
 .wrx{width:14px;height:14px;border-radius:50%;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.5)}
 .pop .enk{background:#fff4e6;border-left:3px solid #f08c00;padding:4px 7px;font-size:12.5px}
+.rotc{display:flex;flex-direction:column;background:#fff;border-radius:10px;box-shadow:0 1px 5px rgba(0,0,0,.4);overflow:hidden}
+.rotc button{width:44px;height:38px;border:0;border-bottom:1px solid #ddd;background:#fff;color:#3b3222;font-size:19px;line-height:1;cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center}
+.rotc button:last-child{border-bottom:0}
+.rotc button:active{background:#f3e6d6}
+.rotc #rcN{height:52px;flex-direction:column;gap:1px}
+.rotc #rcN svg{width:26px;height:26px;transition:transform .15s linear}
+.rotc #rcN span{font-size:10px;font-weight:700;color:#555}
+.rotc #rcF.on{background:#ffd43b}
+.rotc.follow #rcN svg{transition:none}
 .pop .src{font-size:11.5px;color:#777}.pop .src a{color:#8b5a2b}
 </style>
 <!--pwa-->
@@ -101,6 +111,12 @@ input[type=range]{width:100%}
     <span class="chip on" data-base="osm">Kaart (OSM)</span>
     <span class="chip" data-base="sat">Luchtfoto nu (Esri)</span>
   </div>
+
+  <h2>Kaartrichting</h2>
+  <div class="note">Boven op het scherm: <b id="rotTxt">0° (N)</b></div>
+  <input type="range" id="rotSl" min="0" max="359" step="1" value="0" aria-label="Kaartrichting in graden">
+  <label class="tog"><input type="checkbox" id="tgCompass"> 🧭 Volg kompas (telefoon)</label>
+  <div class="note">Draai de kaart zodat ze overeenkomt met wat je in het veld ziet. Tik op de noordpijl om het noorden weer boven te zetten.</div>
 
   <h2>Frontlijn</h2>
   <div class="row" id="yearRow"></div>
@@ -149,6 +165,7 @@ input[type=range]{width:100%}
   <p><a href="ieper.html"><b>🏛️ Bezienswaardig in Ieper</b></a>: wat je te voet in de stad zelf ziet, met wandellus (ook als laag op deze kaart).</p>
   <p><a href="weekendroute.html"><b>🚗 3-daagse route</b></a>: een weekendroute in drie dagen, van Alveringem tot Raversyde (ook als laag op deze kaart).</p>
   <p><a href="programma.html"><b>📅 Dagprogramma’s</b></a>: kant-en-klare dagen met de auto, met tijden, rijafstanden, lunchtips en een rustige variant.</p>
+  <p><b>🧭 Kaart draaien:</b> gebruik ↺/↻ linksboven of de schuifbalk onder ☰ Lagen; tik op de noordpijl voor noorden boven. Met ‘🧭 Volg kompas’ draait de kaart mee met de richting waarin je telefoon wijst.</p>
   <p>Een bezoekersgids voor de WOI-plekken rond Ieper. Werkt in de browser van je telefoon; voor ‘Mijn locatie’ moet je locatietoegang geven (werkt het best als de kaart via https wordt geopend).</p>
   <h3>Historische lagen en bronnen</h3>
   <ul>
@@ -196,7 +213,10 @@ const YEARS = [
 
 let startView=[[50.835, 2.92], 12];
 if (/^#[\d.]+,[\d.]+,\d+$/.test(location.hash)) { const a=location.hash.slice(1).split(','); startView=[[+a[0],+a[1]],+a[2]]; }
-const map = L.map('map', {zoomControl:false}).setView(startView[0], startView[1]);
+const map = L.map('map', {zoomControl:false, rotate:true, bearing:0, rotateControl:false, touchRotate:false, shiftKeyRotate:false, compassBearing:false}).setView(startView[0], startView[1]);
+// panes: lijnen/vlakken draaien mee (rotatePane), markers blijven rechtop (norotatePane)
+function vPane(n){ return map.createPane(n, map.getPane('rotatePane')||undefined); }
+function mPane(n){ return map.createPane(n, map.getPane('norotatePane')||undefined); }
 if (/^#[\d.]+,[\d.]+,\d+$/.test(location.hash)) { L.circleMarker(startView[0],{radius:14,color:'#c92a2a',weight:3,fillColor:'#c92a2a',fillOpacity:.15,interactive:false}).addTo(map); }
 L.control.zoom({position:'bottomright'}).addTo(map);
 map.attributionControl.setPrefix('<a href="https://leafletjs.com" target="_blank" rel="noopener">Leaflet</a>');
@@ -231,7 +251,7 @@ const monum = L.tileLayer.wms(MERC, Object.assign({layers:'ps:ps_bes_monument'},
 const rasterOverlays = [photos, unesco, monum];
 
 // ---- front lines ----
-map.createPane('front'); map.getPane('front').style.zIndex = 420;
+vPane('front'); map.getPane('front').style.zIndex = 420;
 const frontGroups = {};
 YEARS.filter(y=>FRONT[y.k]).forEach(y=>{
   frontGroups[y.k] = L.geoJSON(FRONT[y.k], {pane:'front',
@@ -254,7 +274,7 @@ YEARS.forEach(y=>{
 });
 
 // ---- trenches (UGent, CC BY 4.0) ----
-map.createPane('trench'); map.getPane('trench').style.zIndex = 410;
+vPane('trench'); map.getPane('trench').style.zIndex = 410;
 const TTYPE = {gevecht:'gevechtsloopgraaf', verbinding:'verbindingsloopgraaf', sap:'sappe (aanvalsloopgraaf)'};
 const trench = L.geoJSON(TRENCH, {pane:'trench',
   style: f => { const p=f.properties.n; const col = p==='Duits' ? '#c92a2a' : (p==='Geallieerd' ? '#1864ab' : '#495057');
@@ -344,7 +364,7 @@ btnLoc.onclick=()=>{
 };
 
 // ---- Weekendroute (3 dagen), gegevens uit weekendroute.js ----
-map.createPane('wr'); map.getPane('wr').style.zIndex = 640;
+vPane('wr'); map.getPane('wr').style.zIndex = 640;
 const wrAll = L.layerGroup(), wrDay = {};
 if (window.WR) {
   Object.entries(WR.days).forEach(([d,D])=>{
@@ -411,7 +431,7 @@ if (/^#gevaar/.test(location.hash)) { const t=document.getElementById('tgGev'); 
 
 // ---- Wandel- en fietsroutes (gegevens uit routes.js) ----
 if (window.ROUTES) {
-  map.createPane('rt'); map.getPane('rt').style.zIndex = 630;
+  vPane('rt'); map.getPane('rt').style.zIndex = 630; mPane('rtM'); map.getPane('rtM').style.zIndex = 630;
   const rtRow=document.getElementById('rtRow'), rtLayers={};
   ROUTES.forEach(r=>{
     const g=L.layerGroup(), exact=!!r.g;
@@ -422,7 +442,7 @@ if (window.ROUTES) {
     else { const pts=[[r.s[0],r.s[1]]].concat(r.m.map(m=>[m[0],m[1]])).concat([[r.s[0],r.s[1]]]);
       L.polyline(pts,{pane:'rt',color:r.c,weight:3.5,opacity:.9,dashArray:'2 8',lineCap:'round'}).bindPopup(html,{maxWidth:320}).addTo(g); }
     r.m.forEach(m=>L.circleMarker([m[0],m[1]],{pane:'rt',radius:5,color:'#fff',weight:2,fillColor:r.c,fillOpacity:1}).bindPopup('<b>'+esc(m[2])+'</b><br>'+esc(r.naam)).addTo(g));
-    L.marker([r.s[0],r.s[1]],{pane:'rt',title:'Start: '+r.naam,icon:L.divIcon({className:'',iconSize:[26,26],iconAnchor:[13,13],popupAnchor:[0,-12],html:'<div class="wrn" style="background:'+r.c+';font-size:14px">'+(r.t==='fiets'?'🚲':'🚶')+'</div>'})}).bindPopup(html,{maxWidth:320, autoPanPaddingTopLeft:[10,70]}).addTo(g);
+    L.marker([r.s[0],r.s[1]],{pane:'rtM',title:'Start: '+r.naam,icon:L.divIcon({className:'',iconSize:[26,26],iconAnchor:[13,13],popupAnchor:[0,-12],html:'<div class="wrn" style="background:'+r.c+';font-size:14px">'+(r.t==='fiets'?'🚲':'🚶')+'</div>'})}).bindPopup(html,{maxWidth:320, autoPanPaddingTopLeft:[10,70]}).addTo(g);
     rtLayers[r.id]=g;
     const lab=document.createElement('label'); lab.className='tog';
     lab.innerHTML='<input type="checkbox" data-r="'+r.id+'"> <span class="dot" style="display:inline-block;width:11px;height:11px;border-radius:50%;background:'+r.c+'"></span> '+(r.t==='fiets'?'🚲 ':'🚶 ')+esc(r.naam)+' <span class="note">('+esc(r.km)+(exact?'':', benadering')+')</span>';
@@ -437,7 +457,7 @@ if (window.ROUTES) {
 
 // ---- Bezienswaardig in Ieper (gegevens uit ieper.js) ----
 if (window.IEPER) {
-  map.createPane('ip'); map.getPane('ip').style.zIndex = 640;
+  vPane('ip'); map.getPane('ip').style.zIndex = 640; mPane('ipM'); map.getPane('ipM').style.zIndex = 640;
   const IP=window.IEPER, ipL=L.layerGroup(), ipM={}, byId={};
   IP.items.forEach((x,i)=>{ x.n=i+1; byId[x.id]=x; });
   const lp=IP.loop.ids.map(id=>[byId[id].lat,byId[id].lng]); lp.push(lp[0]);
@@ -448,7 +468,7 @@ if (window.IEPER) {
       '<p>'+x.kort+'</p><p><b>WOI:</b> '+x.woi+'</p><p><b>Praktisch:</b> '+x.prak+'</p>'+
       '<p class="src">Bron: '+x.bron.map(b=>'<a href="'+b[1]+'" target="_blank" rel="noopener">'+esc(b[0])+'</a>').join(' · ')+'</p>'+
       '<div class="btns"><a href="https://www.google.com/maps/dir/?api=1&destination='+x.lat+','+x.lng+'&travelmode=walking" target="_blank" rel="noopener">🚶 Navigeer</a><a class="sec" href="ieper.html#'+x.id+'">🏛️ Meer</a></div></div>';
-    ipM[x.id]=L.marker([x.lat,x.lng],{pane:'ip',title:x.naam,icon:L.divIcon({className:'',iconSize:[24,24],iconAnchor:[12,12],popupAnchor:[0,-11],
+    ipM[x.id]=L.marker([x.lat,x.lng],{pane:'ipM',title:x.naam,icon:L.divIcon({className:'',iconSize:[24,24],iconAnchor:[12,12],popupAnchor:[0,-11],
       html:'<div class="wrn" style="background:'+IP.color+';width:24px;height:24px;font-size:11px">'+x.n+'</div>'})})
       .bindPopup(html,{maxWidth:320, autoPanPaddingTopLeft:[10,70]}).addTo(ipL);
   });
@@ -458,6 +478,78 @@ if (window.IEPER) {
     if (m[1] && ipM[m[1]]) { map.setView(ipM[m[1]].getLatLng(),17); ipM[m[1]].openPopup(); }
     else map.fitBounds(L.latLngBounds(IP.items.map(x=>[x.lat,x.lng])),{padding:[30,30]}); }
 }
+
+// ---- Kaart draaien (leaflet-rotate) en kompas volgen ----
+(function(){
+  const canRot = typeof map.setBearing==='function' && map._rotate;
+  const DIRS=['N','NO','O','ZO','Z','ZW','W','NW'];
+  const norm=a=>((a%360)+360)%360;
+  const ctl=L.control({position:'topleft'});
+  ctl.onAdd=()=>{ const d=L.DomUtil.create('div','rotc');
+    d.innerHTML='<button id="rcN" type="button" title="Noorden boven" aria-label="Noorden boven zetten"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 17 12H7z" fill="#c92a2a"/><path d="M12 22 7 12h10z" fill="#adb5bd"/><text x="12" y="10.5" font-size="5.5" text-anchor="middle" fill="#fff" font-weight="700" font-family="sans-serif">N</text></svg><span id="rcDeg">N</span></button>'+
+      '<button id="rcL" type="button" title="Kaart 15° naar links draaien" aria-label="Kaart naar links draaien">↺</button>'+
+      '<button id="rcR" type="button" title="Kaart 15° naar rechts draaien" aria-label="Kaart naar rechts draaien">↻</button>'+
+      '<button id="rcF" type="button" title="Volg kompas: kaart draait mee met je telefoon" aria-label="Volg kompas">🧭</button>';
+    L.DomEvent.disableClickPropagation(d); L.DomEvent.disableScrollPropagation(d); return d; };
+  ctl.addTo(map);
+  const el=id=>document.getElementById(id);
+  const sl=el('rotSl'), tg=el('tgCompass');
+  // kijkrichting = kompasrichting die boven op het scherm staat; bearing van de kaart = 360 - kijkrichting
+  const heading=()=>canRot?norm(360-map.getBearing()):0;
+  function ui(){ const h=Math.round(heading())%360, b=canRot?map.getBearing():0;
+    el('rcN').querySelector('svg').style.transform='rotate('+b+'deg)';
+    el('rcDeg').textContent = h===0?'N':h+'°';
+    el('rotTxt').textContent = h+'° ('+DIRS[Math.round(h/45)%8]+')';
+    if(document.activeElement!==sl) sl.value=h; }
+  function setHeading(h){ if(!canRot){ toast('Draaien wordt in deze browser niet ondersteund.'); return; } map.setBearing(norm(360-h)); ui(); }
+  if(canRot) map.on('rotate', ui);
+  el('rcN').onclick=()=>{ stopFollow(); setHeading(0); };
+  el('rcL').onclick=()=>{ stopFollow(); setHeading(heading()+15); };
+  el('rcR').onclick=()=>{ stopFollow(); setHeading(heading()-15); };
+  sl.oninput=()=>{ stopFollow(); setHeading(+sl.value); };
+  // kompas
+  let following=false, evName=null, cur=null, gotData=false, wd=0;
+  function screenAngle(){ return (screen.orientation&&typeof screen.orientation.angle==='number')?screen.orientation.angle:(typeof window.orientation==='number'?window.orientation:0); }
+  function onOri(e){
+    let h=null;
+    if(typeof e.webkitCompassHeading==='number' && !isNaN(e.webkitCompassHeading)) h=e.webkitCompassHeading;        // iOS
+    else if(e.alpha!=null && (e.absolute===true || e.type==='deviceorientationabsolute')) h=360-e.alpha;            // Android
+    if(h==null) return;
+    gotData=true; if(!following) return;
+    const t=norm(h+screenAngle());
+    if(cur==null) cur=t;
+    else { const d=((t-cur+540)%360)-180;           // kortste weg (359° → 1°)
+      if(Math.abs(d)<0.3) return;                   // trillen negeren
+      cur=norm(cur+d*0.25); }                       // demping
+    map.setBearing(norm(360-cur));
+  }
+  function listen(){
+    evName=('ondeviceorientationabsolute' in window)?'deviceorientationabsolute':'deviceorientation';
+    window.addEventListener(evName,onOri,true);
+    following=true; cur=null; gotData=false; el('rcF').classList.add('on'); tg.checked=true; document.querySelector('.rotc').classList.add('follow');
+    toast('🧭 Kaart volgt je kompas. Houd je telefoon plat; tik op de noordpijl om te stoppen.',4000);
+    clearTimeout(wd); wd=setTimeout(()=>{ if(following&&!gotData){ stopFollow(); toast('Geen kompasgegevens ontvangen. Je toestel of browser ondersteunt dit niet (op een computer werkt het niet).',5000); } },3500);
+  }
+  function stopFollow(){ if(!following) return; following=false; clearTimeout(wd);
+    if(evName) window.removeEventListener(evName,onOri,true);
+    el('rcF').classList.remove('on'); tg.checked=false;
+    const c=document.querySelector('.rotc'); if(c) c.classList.remove('follow'); }
+  function startFollow(){
+    if(!canRot){ toast('Draaien wordt in deze browser niet ondersteund.'); tg.checked=false; return; }
+    if(!('DeviceOrientationEvent' in window)){ toast('Je toestel of browser heeft geen kompas.'); tg.checked=false; return; }
+    if(!window.isSecureContext){ toast('Kompas werkt alleen via https.'); tg.checked=false; return; }
+    const DOE=window.DeviceOrientationEvent;
+    if(typeof DOE.requestPermission==='function'){          // iOS 13+: vragen bij tik
+      DOE.requestPermission().then(st=>{ if(st==='granted') listen();
+        else { tg.checked=false; toast('Geen toestemming voor het kompas. Sta ‘Beweging en richting’ toe in Safari (aA → Website-instellingen) en probeer opnieuw.',6000); } })
+        .catch(()=>{ tg.checked=false; toast('Kompas kon niet gestart worden.'); });
+    } else listen();
+  }
+  el('rcF').onclick=()=>{ following?stopFollow():startFollow(); };
+  tg.onchange=()=>{ tg.checked?startFollow():stopFollow(); };
+  ui();
+  window.__rot={setHeading, heading, startFollow, stopFollow, isFollowing:()=>following};
+})();
 
 setYear(curYear);
 if (window.innerWidth >= 800) { panel.classList.remove('hidden'); bp.classList.add('on'); }
