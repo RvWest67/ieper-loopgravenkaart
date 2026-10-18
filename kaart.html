@@ -267,7 +267,7 @@ YEARS.filter(y=>FRONT[y.k]).forEach(y=>{
     onEachFeature:(f,l)=>l.bindPopup('<b>Frontlijn '+y.label+'</b><br>'+(f.properties.nat==='Duits'?'Duitse lijn':'Geallieerde lijn')+'<br><span class="note">Bron: Provincie West-Vlaanderen</span>')
   });
 });
-let curYear = '1915';
+let curYear = 'all'; // standaard alle frontlijnen aan
 function setYear(k){
   curYear = k;
   Object.entries(frontGroups).forEach(([yk,g])=>{ (k==='all'||k===yk) ? g.addTo(map) : map.removeLayer(g); });
