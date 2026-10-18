@@ -8,6 +8,8 @@
 <title>Simulatie Ieperboog 1914–1918</title>
 <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
 <script src="vendor/leaflet/leaflet.js"></script>
+<script>window.GMR_NO_AUTO=true;</script>
+<script src="gmroute.js"></script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%BA%3C/text%3E%3C/svg%3E">
 <style>
 :root{--bar:#3b3222;--accent:#8b5a2b;--bg:#fffdf7;--al:#1864ab;--de:#c92a2a;--be:#e8a500;--sheetH:190px}
@@ -221,6 +223,14 @@ const wide = () => innerWidth >= 900;
 
 const map = L.map('map', {zoomControl:false, zoomSnap:0.25}).setView([50.84,2.93], 11);
 L.control.zoom({position:'topright'}).addTo(map);
+// Vast overzicht: de simulatie zoomt of verschuift zelf niet meer tijdens het afspelen; zelf zoomen mag, ⤢ zet het overzicht terug.
+const OVERVIEW = L.latLngBounds([[50.70,2.78],[51.04,3.12]]);
+function fitOverview(anim){ const h=(typeof sheetH==='function')?sheetH():0, w=innerWidth>=900?410:0;
+  map.fitBounds(OVERVIEW,{paddingTopLeft:[8,8],paddingBottomRight:[8+w,8+h],animate:!!anim&&!RM,duration:.6}); }
+const ovc=L.control({position:'topright'});
+ovc.onAdd=()=>{ const d=L.DomUtil.create('div','leaflet-bar'); d.innerHTML='<a href="#" role="button" title="Terug naar het overzicht" aria-label="Terug naar het overzicht" style="font-size:16px;font-weight:700">⤢</a>';
+  L.DomEvent.disableClickPropagation(d); d.firstChild.onclick=e=>{ e.preventDefault(); fitOverview(true); }; return d; };
+ovc.addTo(map);
 L.control.scale({imperial:false, position:'bottomleft'}).addTo(map);
 map.attributionControl.setPrefix('<a href="https://leafletjs.com" target="_blank" rel="noopener">Leaflet</a>');
 const bases = {
@@ -235,7 +245,7 @@ const photos = new ArcExport('https://gwadmin.west-vlaanderen.be/gwserver/rest/s
   {minZoom:14, maxZoom:20, maxNativeZoom:19, opacity:.8, zIndex:5, attribution:'WOI-luchtfoto’s: Prov. West-Vlaanderen / IFFM, IWM, WHI, UGent'});
 ['ghost','front','trench','fx','lbl'].forEach((n,i)=>{ map.createPane(n); map.getPane(n).style.zIndex = 405+i*5; });
 map.getPane('lbl').style.zIndex = 640; map.getPane('fx').style.zIndex = 450;
-['front','ghost'].forEach(p=>map.getPane(p).style.transition = RM ? 'none' : 'opacity .7s');
+
 
 // ---------- front composition (source lines + approximations) ----------
 function inPoly(lat,lng,poly){ let ins=false; for(let i=0,j=poly.length-1;i<poly.length;j=i++){ const yi=poly[i][0],xi=poly[i][1],yj=poly[j][0],xj=poly[j][1];
@@ -289,9 +299,8 @@ function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','
 POIS.forEach(p=>{
   const cat=CATS[p.cat];
   const icon=L.divIcon({className:'',iconSize:[24,24],iconAnchor:[12,24],popupAnchor:[0,-22],html:'<div class="pin" style="background:'+cat.color+'"></div>'});
-  const nav='https://www.google.com/maps/dir/?api=1&destination='+p.lat+','+p.lng;
   const html='<div class="pop"><h3>'+esc(p.naam)+'</h3><span class="badge" style="background:'+cat.color+'">'+cat.label+'</span><p>'+esc(p.gesch)+'</p><p><b>Nu te zien:</b> '+esc(p.nu)+'</p><p><b>Praktisch (okt. 2026):</b> '+esc(p.prak)+'</p>'+
-    '<div class="btns"><a href="'+nav+'" target="_blank" rel="noopener">🧭 Navigeer</a><a class="sec" href="kaart.html#'+p.lat+','+p.lng+',16">Op loopgravenkaart</a></div></div>';
+    '<div class="btns"><a class="sec" href="kaart.html#'+p.lat+','+p.lng+',16">Op loopgravenkaart</a></div></div>';
   poiMarkers[p.id]=L.marker([p.lat,p.lng],{icon,title:p.naam,opacity:.8}).bindPopup(html,{maxWidth:290,autoPanPaddingBottomRight:[10,10]}).addTo(poiLayer);
 });
 const lc=L.control({position:'topleft'});
@@ -512,14 +521,46 @@ L.DomEvent.disableClickPropagation($('legend')); L.DomEvent.disableScrollPropaga
 let frontCur=null, frontGhost=null, idx=0, playing=false, playTimer=null;
 function hasAx(s){ return !!(s.zone || (s.front.spec&&s.front.spec.add) || (s.front.after&&s.front.after.spec.add)); }
 function prevSpec(i){ for(let j=i-1;j>=0;j--){ const sp=STEPS[j].front.after?STEPS[j].front.after.spec:STEPS[j].front.spec; if(sp) return sp; } return null; }
+// Vloeiende overgang tussen fasen: lijnen die gelijk blijven blijven staan, geschetste (benaderde) lijnen schuiven
+// naar hun nieuwe ligging (morph), de rest vervaagt in elkaar over (crossfade). Alles met CSS-opacity of één rAF-lus.
+let FL=[], GL=[], morphRaf=0;
+const segKey=s=>s.nat+(s.ax?'a':'')+s.c.length+':'+s.c[0].join()+':'+s.c[s.c.length-1].join();
+function segLayer(s, ghost){ return frontLayer([s], ghost).getLayers()[0]; }
+function elOf(l){ return l && l.getElement ? l.getElement() : null; }
+function fadeOut(l, ms){ const el=elOf(l); if(!el||RM){ map.removeLayer(l); return; } el.style.transition='opacity '+ms+'ms ease'; el.style.opacity=0; setTimeout(()=>map.removeLayer(l), ms+60); }
+function fadeInAll(ls, ms){ const els=ls.map(elOf).filter(Boolean); if(RM||!els.length) return;
+  els.forEach(el=>{ el.style.transition='none'; el.style.opacity=0; }); els[0].getBoundingClientRect();
+  requestAnimationFrame(()=>els.forEach(el=>{ el.style.transition='opacity '+ms+'ms ease'; el.style.opacity=1; })); }
+function resample(c, n){ const d=[0]; for(let i=1;i<c.length;i++) d.push(d[i-1]+distM(c[i-1],c[i])); const T=d[d.length-1]||1, out=[]; let k=0;
+  for(let i=0;i<n;i++){ const t=T*i/(n-1); while(k<d.length-2 && d[k+1]<t) k++; const f=(t-d[k])/((d[k+1]-d[k])||1); out.push([c[k][0]+(c[k+1][0]-c[k][0])*f, c[k][1]+(c[k+1][1]-c[k][1])*f]); } return out; }
+function mid(c){ return c[Math.floor(c.length/2)]; }
+function curCoords(l){ return l.getLatLngs().map(p=>[p.lat,p.lng]); }
 function showFront(spec, ghostSpec){
-  const pf=map.getPane('front'), pg=map.getPane('ghost'); pf.style.opacity=0; pg.style.opacity=0;
-  setTimeout(()=>{
-    [frontCur,frontGhost].forEach(l=>l&&map.removeLayer(l)); frontCur=frontGhost=null;
-    if(spec) frontCur=frontLayer(compose(spec),false).addTo(map);
-    if(ghostSpec && JSON.stringify(ghostSpec)!==JSON.stringify(spec)) frontGhost=frontLayer(compose(ghostSpec),true).addTo(map);
-    pf.style.opacity=1; pg.style.opacity=1;
-  }, RM?0:300);
+  cancelAnimationFrame(morphRaf);
+  const segs=spec?compose(spec):[]; const old=FL, used=new Set(), next=[], added=[], morphs=[];
+  const byKey=new Map(); old.forEach(o=>{ if(!byKey.has(o.key)) byKey.set(o.key,o); });
+  segs.forEach(s=>{ const k=segKey(s), o=byKey.get(k);
+    if(o && !used.has(o)){ used.add(o); o.layer.setLatLngs(s.c); const el=elOf(o.layer); if(el){ el.style.transition='opacity .3s'; el.style.opacity=1; } next.push(o); return; }
+    let m=null;
+    if(!RM && s.ax){ let bd=9000; old.forEach(o=>{ if(used.has(o)||o.nat!==s.nat||!o.ax) return; const dd=distM(mid(o.c),mid(s.c)); if(dd<bd){ bd=dd; m=o; } }); }
+    const layer=segLayer(s,false);
+    if(m){ used.add(m); const A0=curCoords(m.layer), B=resample(s.c,64); let A=resample(A0,64);
+      if(distM(A[0],B[0])+distM(A[63],B[63]) > distM(A[0],B[63])+distM(A[63],B[0])) A=A.reverse();
+      layer.setLatLngs(A); layer.addTo(map); map.removeLayer(m.layer); morphs.push({layer,A,B,fin:s.c}); }
+    else { layer.addTo(map); added.push(layer); }
+    next.push({key:k, nat:s.nat, ax:s.ax, c:s.c, layer});
+  });
+  old.forEach(o=>{ if(!used.has(o)) fadeOut(o.layer, 650); });
+  fadeInAll(added, 750); FL=next;
+  if(morphs.length){ const t0=performance.now(), D=1100; const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+    const step=now=>{ const f=Math.min(1,(now-t0)/D), e=ease(f);
+      morphs.forEach(m=>m.layer.setLatLngs(f>=1? m.fin : m.A.map((a,i)=>[a[0]+(m.B[i][0]-a[0])*e, a[1]+(m.B[i][1]-a[1])*e])));
+      if(f<1) morphRaf=requestAnimationFrame(step); };
+    morphRaf=requestAnimationFrame(step); }
+  // vorige fase (grijs): eenvoudige crossfade
+  const gsegs = (ghostSpec && JSON.stringify(ghostSpec)!==JSON.stringify(spec)) ? compose(ghostSpec) : [];
+  const gk=gsegs.map(segKey).join('|');
+  if(gk!==(GL.key||'')){ (GL.ls||[]).forEach(l=>fadeOut(l,650)); const ls=gsegs.map(s=>segLayer(s,true).addTo(map)); fadeInAll(ls,750); GL={key:gk, ls}; }
 }
 function flyView(v){
   const z=v[2], h=sheetH(), w=wide()?410:0;
@@ -552,10 +593,10 @@ function go(i, keepPlaying){
   $('visbadge').innerHTML = esc(s.datum) + (hasAx(s)?'<br><span class="ax">≈ lijn deels benaderd</span>':'');
   if($('legend').classList.contains('show')) renderLegend();
   if(history.replaceState) history.replaceState(null,'','#'+s.id);
-  flyView(s.view);
+  // geen automatische camerabeweging meer: het overzicht blijft staan (zie fitOverview)
   trenchHighlight(s.trenchHi||null);
   // effects after the camera settles
-  const t0 = RM ? 0.05 : 1.25;
+  const t0 = RM ? 0.05 : 0.45;
   later(()=>{ if(idx!==STEPS.indexOf(s)) return;
     (s.labels||[]).forEach(label);
     if(s.gas) fxGas(s.gas);
@@ -563,11 +604,11 @@ function go(i, keepPlaying){
     if(s.fire) fxFire(s.fire);
     if(s.rain) fxRain(s.dur);
     (s.bursts||[]).forEach(b=>fxBoom(b.at, b.delay||0, b.big, b.n, ''));
-    if(s.minesPreview) MINES.filter(m=>m.fired).forEach(m=>L.marker([m.lat,m.lng],{pane:'fx',icon:L.divIcon({className:'',iconSize:[8,8],html:'<div class="minepre"></div>'})}).bindPopup(esc(m.naam)+' – mijnkamer in aanleg').addTo(fxLayer));
+    if(s.minesPreview) MINES.filter(m=>m.fired).forEach(m=>L.marker([m.lat,m.lng],{pane:'fx',icon:L.divIcon({className:'',iconSize:[8,8],html:'<div class="minepre"></div>'})}).bindPopup(esc(m.naam)+' – mijnkamer in aanleg',{noRoute:true}).addTo(fxLayer));
     if(s.mines){ const fired=MINES.filter(m=>m.fired).sort((a,b)=>b.lat-a.lat);
       later(screenFlash, 0.5);
       fired.forEach((m,j)=>fxBoom([m.lat,m.lng], 0.5+j*0.13, m.kg>40000, m.naam, m.kg?('lading ca. '+m.kg.toLocaleString('nl-BE')+' kg'):''));
-      MINES.filter(m=>!m.fired).forEach(m=>L.marker([m.lat,m.lng],{pane:'fx',icon:L.divIcon({className:'',iconSize:[10,10],html:'<div class="minepre" style="background:#868e96"></div>'})}).bindPopup(esc(m.naam)+' – niet ontstoken'+(m.note?' ('+esc(m.note)+')':'')).addTo(fxLayer)); }
+      MINES.filter(m=>!m.fired).forEach(m=>L.marker([m.lat,m.lng],{pane:'fx',icon:L.divIcon({className:'',iconSize:[10,10],html:'<div class="minepre" style="background:#868e96"></div>'})}).bindPopup(esc(m.naam)+' – niet ontstoken'+(m.note?' ('+esc(m.note)+')':''),{noRoute:true}).addTo(fxLayer)); }
     if(s.zone){ later(()=>{
       L.polygon(ZONE,{pane:'fx',color:'#2b8a3e',weight:0,fillColor:'#51cf66',fillOpacity:.25,interactive:true}).bindPopup('Geallieerde winst 28 sept. – ca. 1 okt. 1918 (<b>benadering</b>, geschetst naar Wikipedia ‘Fifth Battle of Ypres’)').addTo(fxLayer);
       L.polyline(APPROX,{pane:'fx',color:'#2b8a3e',weight:4,dashArray:'10 6'}).bindPopup('Geallieerde lijn ca. 1 okt. 1918 – <b>benadering</b>').addTo(fxLayer); }, RM?0:2.6); }
@@ -592,7 +633,7 @@ $('info').onclick=e=>{ if(e.target.id==='info') e.target.classList.remove('show'
 $('srclist').innerHTML = SOURCES.map(s=>'<li><b>'+esc(s[0])+':</b> <a href="'+s[2]+'" target="_blank" rel="noopener">'+esc(s[1])+'</a></li>').join('');
 function fromHash(){ const h=location.hash.slice(1); let m=/^stap(\d+)$/.exec(h); if(m && LEGACY[m[1]]) return STEPS.findIndex(s=>s.id===LEGACY[m[1]]);
   const i=STEPS.findIndex(s=>s.id===h); return i>=0?i:0; }
-setState(sstate,false,true); sizeCanvas(); layoutSheet();
+setState(sstate,false,true); sizeCanvas(); layoutSheet(); fitOverview(false);
 go(fromHash());
 addEventListener('hashchange',()=>{ const i=fromHash(); if(i!==idx) go(i); });
 window.__simReady = true;
