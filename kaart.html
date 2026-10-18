@@ -8,6 +8,8 @@
 <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
 <script src="vendor/leaflet/leaflet.js"></script>
 <script src="vendor/leaflet-rotate/leaflet-rotate.js"></script>
+<script>window.GMR_NO_AUTO=true;</script>
+<script src="gmroute.js"></script>
 <script src="weekendroute.js"></script>
 <script src="ieper.js"></script>
 <script src="routes.js"></script>
@@ -160,7 +162,7 @@ input[type=range]{width:100%}
 
   <h2>Plekken</h2>
   <div class="row" id="catRow"></div>
-  <div class="note">Tik op een plek voor uitleg, openingsuren (okt 2026) en ‘Navigeer’.</div>
+  <div class="note">Tik op een plek voor uitleg, openingsuren (okt 2026) en ‘🧭 Route in Google Maps’.</div>
 </div>
 
 <div id="info"><div class="box">
@@ -175,6 +177,7 @@ input[type=range]{width:100%}
   <p><a href="ieper.html"><b>🏛️ Bezienswaardig in Ieper</b></a>: wat je te voet in de stad zelf ziet, met wandellus (ook als laag op deze kaart).</p>
   <p><a href="weekendroute.html"><b>🚗 3-daagse route</b></a>: een weekendroute in drie dagen, van Alveringem tot Raversyde (ook als laag op deze kaart).</p>
   <p><a href="programma.html"><b>📅 Dagprogramma’s</b></a>: kant-en-klare dagen met de auto, met tijden, rijafstanden, lunchtips en een rustige variant.</p>
+  <p><b>🚗 Route:</b> tik op een plek en kies ‘🧭 Route in Google Maps’ (met de auto, vanaf waar je nu bent) of ‘🚶 te voet’.</p>
   <p><b>🧭 Kaart draaien:</b> tik op het kompas in de balk bovenaan (↺/↻, ‘⬆ N’ voor noorden boven) of gebruik de schuifbalk onder ☰ Lagen. Met ‘🧭 Volg kompas’ draait de kaart mee met de richting waarin je telefoon wijst.</p>
   <p>Een bezoekersgids voor de WOI-plekken rond Ieper. Werkt in de browser van je telefoon; voor ‘Mijn locatie’ moet je locatietoegang geven (werkt het best als de kaart via https wordt geopend).</p>
   <h3>Historische lagen en bronnen</h3>
@@ -225,6 +228,7 @@ let startView=[[50.835, 2.92], 12];
 if (/^#[\d.]+,[\d.]+,\d+$/.test(location.hash)) { const a=location.hash.slice(1).split(','); startView=[[+a[0],+a[1]],+a[2]]; }
 const map = L.map('map', {zoomControl:false, rotate:true, bearing:0, rotateControl:false, touchRotate:false, shiftKeyRotate:false, compassBearing:false}).setView(startView[0], startView[1]);
 // panes: lijnen/vlakken draaien mee (rotatePane), markers blijven rechtop (norotatePane)
+// Route-knop in elke punt-popup: centraal via gmroute.js (patcht L.Layer.bindPopup).
 function vPane(n){ return map.createPane(n, map.getPane('rotatePane')||undefined); }
 function mPane(n){ return map.createPane(n, map.getPane('norotatePane')||undefined); }
 if (/^#[\d.]+,[\d.]+,\d+$/.test(location.hash)) { L.circleMarker(startView[0],{radius:14,color:'#c92a2a',weight:3,fillColor:'#c92a2a',fillOpacity:.15,interactive:false}).addTo(map); }
@@ -308,11 +312,9 @@ POIS.forEach(p=>{
   const cat = CATS[p.cat];
   const icon = L.divIcon({className:'', iconSize:[30,30], iconAnchor:[15,30], popupAnchor:[0,-28],
     html:'<div class="pin" style="background:'+cat.color+'">'+ICONS[p.cat]+'</div>'});
-  const nav = 'https://www.google.com/maps/dir/?api=1&destination='+p.lat+','+p.lng;
   const html = '<div class="pop"><h3>'+esc(p.naam)+'</h3><span class="badge" style="background:'+cat.color+'">'+cat.label+'</span>'+
     '<p>'+esc(p.gesch)+'</p><p><b>Nu te zien:</b> '+esc(p.nu)+'</p><p><b>Praktisch (nagekeken okt. 2026):</b> '+esc(p.prak)+'</p>'+
-    '<div class="btns"><a href="'+nav+'" target="_blank" rel="noopener">🧭 Navigeer</a>'+
-    (p.web?'<a class="sec" href="'+p.web+'" target="_blank" rel="noopener">Website</a>':'')+'</div>'+
+    (p.web?'<div class="btns"><a class="sec" href="'+p.web+'" target="_blank" rel="noopener">Website</a></div>':'')+
     ((STORYLINKS[p.id]||[]).length?'<div class="vh">'+STORYLINKS[p.id].map(s=>'<a href="verhalen.html#'+s.id+'">📖 Verhaal: '+esc(s.t)+'</a>').join('')+'</div>':'')+'</div>';
   L.marker([p.lat,p.lng], {icon, title:p.naam, riseOnHover:true}).bindPopup(html, {maxWidth:320, autoPanPaddingTopLeft:[10,70]}).addTo(poiLayers[p.cat]);
 });
@@ -365,7 +367,7 @@ btnLoc.onclick=()=>{
   watchId = navigator.geolocation.watchPosition(pos=>{
     const ll=[pos.coords.latitude,pos.coords.longitude], acc=pos.coords.accuracy;
     if(!meMarker){ meCircle=L.circle(ll,{radius:acc,color:'#1c7ed6',weight:1,fillOpacity:.12}).addTo(map);
-      meMarker=L.circleMarker(ll,{radius:8,color:'#fff',weight:3,fillColor:'#1c7ed6',fillOpacity:1}).addTo(map).bindPopup('Je bent hier (±'+Math.round(acc)+' m)'); }
+      meMarker=L.circleMarker(ll,{radius:8,color:'#fff',weight:3,fillColor:'#1c7ed6',fillOpacity:1}).addTo(map).bindPopup('Je bent hier (±'+Math.round(acc)+' m)',{noRoute:true}); }
     else { meMarker.setLatLng(ll); meCircle.setLatLng(ll).setRadius(acc); meMarker.setPopupContent('Je bent hier (±'+Math.round(acc)+' m)'); }
     if(firstFix){ map.setView(ll, Math.max(map.getZoom(),15)); firstFix=false; }
   }, err=>{ toast('Locatie niet beschikbaar: '+(err.code===1?'geen toestemming gegeven.':err.message)); btnLoc.classList.remove('on');
@@ -390,8 +392,7 @@ if (window.WR) {
       '<p>'+esc(p.gesch)+'</p><p><b>Te zien:</b> '+esc(p.zien)+'</p><p><b>Praktisch (nagekeken okt. 2026):</b> '+esc(p.prak)+'</p>'+
       '<p class="enk">🦶 '+esc(p.enkel)+'</p>'+
       '<p class="src">Bron: '+p.bron.map(b=>'<a href="'+b.u+'"'+(/^https?:/.test(b.u)?' target="_blank" rel="noopener"':'')+'>'+esc(b.t)+'</a>').join(' · ')+'</p>'+
-      '<div class="btns"><a href="https://www.google.com/maps/dir/?api=1&destination='+p.lat+','+p.lng+'" target="_blank" rel="noopener">🧭 Navigeer</a>'+
-      '<a class="sec" href="weekendroute.html#'+p.id+'">📅 Meer</a></div></div>';
+      '<div class="btns"><a class="sec" href="weekendroute.html#'+p.id+'">📅 Meer</a></div></div>';
     L.marker([p.lat,p.lng],{icon, pane:'wr', title:p.naam}).bindPopup(html,{maxWidth:320, autoPanPaddingTopLeft:[10,70]}).addTo(wrDay[p.d]);
   });
   WR.extra.forEach(x=>{
@@ -399,7 +400,7 @@ if (window.WR) {
     const html='<div class="pop"><h3>2.'+x.sub+' '+esc(x.naam)+'</h3><span class="badge" style="background:'+c+'">Dag 2 · Plugstreet Wood (te voet vanaf stop 4)</span>'+
       '<p>'+esc(x.gesch)+'</p><p><b>Te zien:</b> '+esc(x.zien)+'</p><p><b>Praktisch:</b> '+esc(x.prak)+'</p><p class="enk">🦶 '+esc(x.enkel)+'</p>'+
       '<p class="src">Bron: '+x.bron.map(b=>'<a href="'+b.u+'" target="_blank" rel="noopener">'+esc(b.t)+'</a>').join(' · ')+'</p>'+
-      '<div class="btns"><a href="https://www.google.com/maps/dir/?api=1&destination='+x.lat+','+x.lng+'&travelmode=walking" target="_blank" rel="noopener">🚶 Navigeer</a><a class="sec" href="weekendroute.html#'+x.id+'">📅 Meer</a></div></div>';
+      '<div class="btns"><a class="sec" href="weekendroute.html#'+x.id+'">📅 Meer</a></div></div>';
     L.marker([x.lat,x.lng],{pane:'wr', title:x.naam, icon:L.divIcon({className:'',iconSize:[24,24],iconAnchor:[12,12],popupAnchor:[0,-11],
       html:'<div class="wrn" style="background:'+c+';width:24px;height:24px;font-size:10px">'+x.sub+'</div>'})})
      .bindPopup(html,{maxWidth:320, autoPanPaddingTopLeft:[10,70]}).addTo(wrDay[2]);
@@ -477,7 +478,7 @@ if (window.IEPER) {
     const html='<div class="pop"><h3>'+x.n+'. '+esc(x.naam)+'</h3><span class="badge" style="background:'+IP.color+'">Bezienswaardig in Ieper</span>'+
       '<p>'+x.kort+'</p><p><b>WOI:</b> '+x.woi+'</p><p><b>Praktisch:</b> '+x.prak+'</p>'+
       '<p class="src">Bron: '+x.bron.map(b=>'<a href="'+b[1]+'" target="_blank" rel="noopener">'+esc(b[0])+'</a>').join(' · ')+'</p>'+
-      '<div class="btns"><a href="https://www.google.com/maps/dir/?api=1&destination='+x.lat+','+x.lng+'&travelmode=walking" target="_blank" rel="noopener">🚶 Navigeer</a><a class="sec" href="ieper.html#'+x.id+'">🏛️ Meer</a></div></div>';
+      '<div class="btns"><a class="sec" href="ieper.html#'+x.id+'">🏛️ Meer</a></div></div>';
     ipM[x.id]=L.marker([x.lat,x.lng],{pane:'ipM',title:x.naam,icon:L.divIcon({className:'',iconSize:[24,24],iconAnchor:[12,12],popupAnchor:[0,-11],
       html:'<div class="wrn" style="background:'+IP.color+';width:24px;height:24px;font-size:11px">'+x.n+'</div>'})})
       .bindPopup(html,{maxWidth:320, autoPanPaddingTopLeft:[10,70]}).addTo(ipL);

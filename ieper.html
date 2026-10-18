@@ -54,6 +54,7 @@ footer a{color:var(--accent)}
 </script>
 <!--/pwa-->
 <script src="ieper.js"></script>
+<script src="gmroute.js"></script>
 </head>
 <body>
 <div id="top">
@@ -77,7 +78,6 @@ footer a{color:var(--accent)}
 (function(){
   const D=window.IEPER, by={}; D.items.forEach((x,i)=>{x.n=i+1; by[x.id]=x;});
   const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-  const gm=x=>'https://www.google.com/maps/search/?api=1&query='+x.lat+','+x.lng;
   const L=D.loop.ids.map(id=>by[id]), pts=L.concat([L[0]]);
   const url='https://www.google.com/maps/dir/?api=1&travelmode=walking&origin='+L[0].lat+','+L[0].lng+'&destination='+L[0].lat+','+L[0].lng+'&waypoints='+L.slice(1).map(x=>x.lat+','+x.lng).join('%7C');
   document.getElementById('lus').innerHTML='<p><b>'+D.loop.km+'</b> · '+D.loop.min+'. Start en einde op de Grote Markt. Langs de vestingwallen loop je tussen Menenpoort en Rijselpoort.</p><ol>'+
@@ -86,7 +86,7 @@ footer a{color:var(--accent)}
     '<p class="src">'+esc(D.loop.bron)+' ⚠️ Google Maps kan een andere (straat)route kiezen; op een telefoon toont de app soms niet alle tussenstops.</p>';
   document.getElementById('items').innerHTML=D.items.map(x=>'<article class="st" id="'+x.id+'"><h3><span class="n">#'+x.n+'</span> '+esc(x.naam)+'</h3>'+
     '<p>'+x.kort+'</p><p><b>WOI:</b> '+x.woi+'</p><p><b>Te zien:</b> '+x.zien+'</p><p><b>Praktisch:</b> '+x.prak+'</p>'+
-    '<div class="links"><a class="lk mp" href="'+gm(x)+'" target="_blank" rel="noopener">📍 Google Maps</a><a class="lk" href="kaart.html#ieper='+x.id+'">🗺 Op de kaart</a></div>'+
+    '<div class="links">'+GMR.html(x.lat,x.lng)+'<a class="lk" href="kaart.html#ieper='+x.id+'">🗺 Op de kaart</a></div>'+
     '<p class="src">Bron: '+x.bron.map(b=>'<a href="'+b[1]+'" target="_blank" rel="noopener">'+esc(b[0])+'</a>').join(' · ')+'</p></article>').join('');
   if(location.hash){ const el=document.getElementById(location.hash.slice(1)); if(el) setTimeout(()=>el.scrollIntoView({block:'start'}),60); }
 })();
