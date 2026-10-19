@@ -17,6 +17,8 @@
 html,body{margin:0;height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#2b2b2b;overscroll-behavior:none}
 body{display:flex;flex-direction:column;height:100vh}
 @supports(height:100dvh){body{height:100dvh}}
+/* iOS Safari: vastzetten op de echte viewport (100dvh + safe-area onderaan telde de werkbalkzone dubbel) */
+body{position:fixed;top:0;left:0;right:0;bottom:0;height:auto;width:auto}
 #topbar{flex:0 0 auto;display:flex;align-items:center;gap:6px;padding:calc(5px + env(safe-area-inset-top)) 8px 5px;background:var(--bar);color:#fff;z-index:1100}
 #topbar h1{font-size:15px;margin:0;flex:1;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #topbar h1 small{display:block;font-weight:400;font-size:11px;opacity:.8}
@@ -82,7 +84,11 @@ html:not(.side) #more{order:3}
 html:not(.side) #strip{order:4;border-top:1px solid #e4d9c6;padding-top:3px;background:var(--bg)}
 html:not(.side) #sheet.s-min #head{display:none}
 html:not(.side) #sheet:not(.open){height:auto}
-html:not(.side) #ystrip{padding-bottom:0}
+html:not(.side) #ystrip{padding-bottom:0;flex-wrap:nowrap;gap:5px}
+html:not(.side) #years{flex:0 1 auto;min-width:0;display:flex}
+html:not(.side) #years button{flex:1 1 38px;width:auto;min-width:28px;max-width:42px;font-size:clamp(10px,3vw,12px);letter-spacing:-.2px}
+html:not(.side) #slider{flex:1 1 60px;min-width:60px;width:60px}
+html:not(.side) #snd{flex:0 0 auto}
 /* kleine knoppen: tikvlak minstens 40 px zonder dat de balk hoger wordt */
 #years button::after,.cb.sm::after{content:"";position:absolute;left:0;right:0;top:50%;height:40px;transform:translateY(-50%)}
 .cb.sm{position:relative}
@@ -137,6 +143,8 @@ html.ls .cb{height:38px;min-width:38px}
 .pin{width:24px;height:24px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.45)}
 .layers{background:rgba(255,255,255,.95);padding:0;border-radius:10px;font-size:13px;box-shadow:0 1px 5px rgba(0,0,0,.3)}
 .layers .hd{font-weight:700;cursor:pointer;padding:10px 12px;min-height:40px}
+.leaflet-left .ovc{clear:none}
+@media(max-width:359px){.layers:not(.open) .hd .t{display:none}}
 .layers label{display:flex;align-items:center;gap:8px;padding:6px 12px;min-height:36px}
 .layers .bd{display:none;padding-bottom:6px}.layers.open .bd{display:block}
 #legend{position:absolute;z-index:990;left:10px;top:62px;max-width:min(300px,78vw);max-height:calc(100% - var(--sheetH) - 80px);overflow:auto;background:rgba(255,255,255,.97);border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,.3);padding:8px 12px 10px;font-size:12.5px;display:none}
@@ -151,7 +159,7 @@ html.ls .cb{height:38px;min-width:38px}
 #info .box{background:#fff;max-width:680px;width:100%;max-height:90%;overflow:auto;border-radius:12px;padding:14px 16px;font-size:13.5px;line-height:1.45}
 #info h3{margin:12px 0 4px;font-size:14px;color:var(--accent)}
 #info ul{padding-left:18px;margin:4px 0}
-.vis-badge{position:absolute;z-index:900;left:50%;transform:translateX(-50%);top:10px;background:rgba(255,255,255,.93);border-radius:8px;padding:3px 8px 4px;font-size:11px;font-weight:600;pointer-events:none;max-width:min(380px,calc(100% - 190px));text-align:center;line-height:1.3;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.vis-badge{position:absolute;z-index:900;left:auto;right:10px;transform:none;top:10px;background:rgba(255,255,255,.93);border-radius:8px;padding:3px 8px 4px;font-size:11px;font-weight:600;pointer-events:none;max-width:min(300px,calc(100% - var(--sideWm,0px) - var(--tlW,150px) - 24px));text-align:right;line-height:1.3;box-shadow:0 1px 4px rgba(0,0,0,.2)}
 .vis-badge .bd{display:block;font-size:12.5px;font-weight:800;color:var(--accent)}
 .vis-badge .cap{display:block;font-weight:500;font-size:12px;color:#2b2b2b;max-height:4em;overflow:hidden;transition:max-height .5s,opacity .5s}
 .vis-badge .cap.off{max-height:0;opacity:0}
@@ -260,19 +268,20 @@ const wide = () => document.documentElement.classList.contains('side');
 const SW = () => wide() ? (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--sideW'))||410) : 0;
 
 const map = L.map('map', {zoomControl:false, zoomSnap:0.25}).setView([50.84,2.93], 11);
-L.control.zoom({position:'topright'}).addTo(map);
+// linksboven: ☰ Lagen, daarnaast ⤢; rechtsboven het kaartlabel
 // Vast overzicht: de simulatie zoomt of verschuift zelf niet meer tijdens het afspelen; zelf zoomen mag, ⤢ zet het overzicht terug.
 // Overzicht: de hele Ieperboog van Armentières tot het Houthulstbos en van Loker tot Roeselare/Dadizele.
 const OVERVIEW = L.latLngBounds([[50.695,2.765],[50.980,3.135]]);
 let userMoved=false, progMove=0;
 function topPad(){ const mr=map.getContainer().getBoundingClientRect(); let b=10;
   document.querySelectorAll('.leaflet-top .leaflet-control').forEach(c=>{ const r=c.getBoundingClientRect(); if(r.height&&r.height<120) b=Math.max(b,r.bottom-mr.top); });
-  return document.documentElement.classList.contains('ls') ? 36 : Math.min(70,b+4); }
+  const vb=$('visbadge'); if(vb){ let h=0; vb.querySelectorAll('.bd,.ml').forEach(e=>h+=e.offsetHeight); if(h) b=Math.max(b, 10+h+8); }
+  return document.documentElement.classList.contains('ls') ? Math.min(b+4,48) : Math.min(90,b+4); }
 function fitOverview(anim){ const h=(typeof sheetH==='function')?sheetH():0, w=SW();
   progMove++; map.fitBounds(OVERVIEW,{paddingTopLeft:[6,topPad()],paddingBottomRight:[6+w,h+(h?24:22)],animate:!!anim&&!RM,duration:.6});
   setTimeout(()=>progMove--, anim?800:50); userMoved=false; }
-const ovc=L.control({position:'topright'});
-ovc.onAdd=()=>{ const d=L.DomUtil.create('div','leaflet-bar'); d.innerHTML='<a href="#" role="button" title="Terug naar het overzicht" aria-label="Terug naar het overzicht" style="font-size:16px;font-weight:700">⤢</a>';
+const ovc=L.control({position:'topleft'});
+ovc.onAdd=()=>{ const d=L.DomUtil.create('div','leaflet-bar ovc'); d.innerHTML='<a href="#" role="button" title="Terug naar het overzicht" aria-label="Terug naar het overzicht" style="font-size:16px;font-weight:700">⤢</a>';
   L.DomEvent.disableClickPropagation(d); d.firstChild.onclick=e=>{ e.preventDefault(); fitOverview(true); }; return d; };
 ovc.addTo(map);
 map.on('dragstart',()=>{ userMoved=true; }); map.on('zoomstart',()=>{ if(!progMove) userMoved=true; });
@@ -369,11 +378,11 @@ POIS.forEach(p=>{
   poiMarkers[p.id]=L.marker([p.lat,p.lng],{icon,title:p.naam,opacity:.8}).bindPopup(html,{maxWidth:290,autoPanPaddingBottomRight:[10,10]}).addTo(poiLayer);
 });
 const lc=L.control({position:'topleft'});
-lc.onAdd=()=>{ const d=L.DomUtil.create('div','layers'); d.innerHTML='<div class="hd" role="button" tabindex="0">☰ Lagen</div><div class="bd">'+
+lc.onAdd=()=>{ const d=L.DomUtil.create('div','layers'); d.innerHTML='<div class="hd" role="button" tabindex="0" aria-label="Lagen">☰<span class="t"> Lagen</span></div><div class="bd">'+
  '<label><input type="radio" name="base" value="osm" checked> Kaart (OSM)</label><label><input type="radio" name="base" value="sat"> Luchtfoto nu</label>'+
  '<label><input type="checkbox" id="tgPh"> WOI-luchtfoto’s (zoom ≥14)</label><label><input type="checkbox" id="tgTr"> Loopgraven (UGent)</label><label><input type="checkbox" id="tgPoi"> Plekken om te bezoeken</label></div>';
  L.DomEvent.disableClickPropagation(d); L.DomEvent.disableScrollPropagation(d); d.querySelector('.hd').onclick=()=>d.classList.toggle('open'); return d; };
-lc.addTo(map);
+lc.addTo(map); ovc.remove(); ovc.addTo(map); L.control.zoom({position:'topleft'}).addTo(map);
 document.querySelectorAll('input[name=base]').forEach(r=>r.onchange=()=>{ map.removeLayer(curBase); curBase=bases[r.value].addTo(map); curBase.bringToBack(); });
 $('tgPh').onchange=e=>{ e.target.checked?photos.addTo(map):map.removeLayer(photos); if(e.target.checked&&map.getZoom()<14) map.setZoom(14); };
 $('tgTr').onchange=e=>{ trenchOn.v=e.target.checked; if(e.target.checked){ trench.addTo(map); trenchHighlight(STEPS[idx].trenchHi||null); } else map.removeLayer(trench); };
@@ -535,7 +544,9 @@ function layoutSheet(){ const h=sheetH(), r=document.documentElement; r.style.se
   r.style.setProperty('--tbH', r.classList.contains('ls') ? $('topbar').offsetHeight+'px' : '0px');
   document.querySelectorAll('.leaflet-bottom').forEach(e=>e.style.bottom=(wide()?0:h)+'px');
   document.querySelectorAll('.leaflet-right').forEach(e=>{ if(e.classList.contains('leaflet-bottom')||e.classList.contains('leaflet-top')) e.style.right=wide()?SW()+'px':'0'; });
-  const vb=$('visbadge'); if(vb) vb.style.left=wide()?'calc((100% - '+SW()+'px)/2)':'50%'; }
+  r.style.setProperty('--sideWm', SW()+'px');
+  const vb=$('visbadge'); if(vb){ vb.style.right=(SW()+10)+'px'; const mr=map.getContainer().getBoundingClientRect(); let w=0;
+    document.querySelectorAll('.leaflet-top.leaflet-left .leaflet-control').forEach(c=>{ const q=c.getBoundingClientRect(); if(q.height&&q.top-mr.top<60) w=Math.max(w,q.right-mr.left); }); r.style.setProperty('--tlW', Math.round(w)+'px'); } }
 if(window.ResizeObserver) new ResizeObserver(layoutSheet).observe(sheet);
 let rsT=0; addEventListener('resize', ()=>{ simMode(); layoutSheet(); clearTimeout(rsT); rsT=setTimeout(()=>{ simMode(); layoutSheet(); map.invalidateSize({pan:false}); if(!userMoved) fitOverview(false); }, 200); });
 // tekstpaneel: 'min' (alleen datum + titel), 'short' (met samenvatting) of 'full' (hele verhaal). Keuze wordt onthouden.
