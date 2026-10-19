@@ -30,7 +30,7 @@ body{display:flex;flex-direction:column;height:100vh}
 .shake{animation:shake .5s linear}
 @keyframes shake{0%,100%{transform:none}20%{transform:translate(3px,-2px)}40%{transform:translate(-3px,2px)}60%{transform:translate(2px,1px)}80%{transform:translate(-1px,-1px)}}
 /* bottom sheet */
-#sheet{position:absolute;left:0;right:0;bottom:0;z-index:1000;background:var(--bg);border-radius:16px 16px 0 0;box-shadow:0 -4px 16px rgba(0,0,0,.25);display:flex;flex-direction:column;max-height:calc(100% - 56px);padding-bottom:env(safe-area-inset-bottom)}
+#sheet{position:absolute;left:0;right:0;bottom:0;z-index:1000;background:var(--bg);border-radius:16px 16px 0 0;box-shadow:0 -4px 16px rgba(0,0,0,.25);display:flex;flex-direction:column;max-height:calc(100% - 56px);padding-bottom:max(6px, env(safe-area-inset-bottom))}
 #grab{flex:0 0 auto;height:20px;display:flex;align-items:center;justify-content:center;cursor:grab;touch-action:none;position:relative}
 #grab .handle{width:44px;height:5px;border-radius:3px;background:#c9bfae}
 #prog{position:absolute;left:14px;right:14px;bottom:0;height:3px;background:transparent;border-radius:2px;overflow:hidden}
@@ -81,6 +81,11 @@ html:not(.side) #head{order:2;padding:0 14px 6px}
 html:not(.side) #more{order:3}
 html:not(.side) #strip{order:4;border-top:1px solid #e4d9c6;padding-top:3px;background:var(--bg)}
 html:not(.side) #sheet.s-min #head{display:none}
+html:not(.side) #sheet:not(.open){height:auto}
+html:not(.side) #ystrip{padding-bottom:0}
+/* kleine knoppen: tikvlak minstens 40 px zonder dat de balk hoger wordt */
+#years button::after,.cb.sm::after{content:"";position:absolute;left:0;right:0;top:50%;height:40px;transform:translateY(-50%)}
+.cb.sm{position:relative}
 html:not(.side) #count{display:none}
 html:not(.side) .leaflet-control-zoom,html.ls .leaflet-control-zoom{display:none}
 @media(max-width:360px){#years button{width:34px}.cb{min-width:36px}}
