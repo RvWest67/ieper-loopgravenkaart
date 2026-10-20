@@ -11,6 +11,7 @@
 <script>window.GMR_NO_AUTO=true;</script>
 <script src="gmroute.js"></script>
 <script src="popsheet.js"></script>
+<script src="overblijfselen.js"></script>
 <script src="ieper.js"></script>
 <script src="routes.js"></script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%BA%3C/text%3E%3C/svg%3E">
@@ -138,10 +139,19 @@ input[type=range]{width:100%}
   <h2>Historische lagen</h2>
   <label class="tog"><input type="checkbox" id="tgPhotos" checked> WOI-luchtfoto’s 1914–1918 <span class="note">(inzoomen)</span></label>
   <label class="tog"><input type="checkbox" id="tgTrench" checked> Loopgraven uit luchtfoto’s (UGent)</label>
+  <div class="note" id="trLeg"></div>
   <label class="tog"><input type="checkbox" id="tgUnesco"> UNESCO WOI-herdenkingsplaatsen</label>
   <label class="tog"><input type="checkbox" id="tgMon"> Beschermde monumenten (Vlaanderen)</label>
+  <label class="tog"><input type="checkbox" id="tgArch"> Beschermde archeologische sites (Vlaanderen)</label>
   <div class="note">Dekking historische kaartlagen: <span id="opv">80</span>%</div>
   <input type="range" id="opacity" min="0" max="100" value="80">
+
+  <h2>Lidar &amp; overblijfselen</h2>
+  <label class="tog"><input type="checkbox" id="tgLidar"> 🏔️ Lidar: reliëf van de bodem (kraters, loopgraven)</label>
+  <div class="row" id="lidarRow" style="margin:2px 0 4px"><span class="chip on" data-l="hill">Reliëfschaduw</span><span class="chip" data-l="svf">Sky-view factor</span></div>
+  <div class="note" id="lidarNote">Digitaal Hoogtemodel Vlaanderen II (0,25 m, ook Komen-Waasten/Ploegsteert) en in Frankrijk IGN LiDAR HD (o.a. Bailleul, Hondschoote; rond Armentières nog niet beschikbaar). Zoom in tot ≥ 15: granaattrechters, mijnkraters en dichtgeslibde loopgraven worden zichtbaar, vooral in bossen en weiden (Hill 60, Sanctuary Wood, Polygoonbos, Bayernwald, Ploegsteertbos). ‘Sky-view factor’ (alleen Vlaanderen) toont kuilen en kraters donker, los van de lichtrichting. Alleen online. <span id="lidarOp">Sterkte <input type="range" id="lidarSl" min="30" max="100" step="5" value="100" aria-label="Sterkte lidar-laag" style="width:110px;vertical-align:middle"></span></div>
+  <label class="tog"><input type="checkbox" id="tgRem"> 🧱 Overblijfselen: bunkers en kraters (OSM)</label>
+  <div class="note" id="remLeg">WOI-resten uit OpenStreetMap: bunkers en schuilplaatsen, geschut- en observatieposten, kraters en slagveldlocaties. Wordt geladen als je de laag aanzet.</div>
 
   <h2>Wandel- &amp; fietsroutes</h2>
   <div id="rtRow"></div>
@@ -180,6 +190,14 @@ input[type=range]{width:100%}
    <li><b>WOI-luchtfoto’s</b>: dezelfde provinciale dienst (<i>AGS_WO1_LuchtFotos</i>), meer dan 2.500 gegeorefereerde luchtfoto’s uit de archieven van In Flanders Fields Museum, Imperial War Museums en War Heritage Institute, verwerkt door UGent (Vakgroep Archeologie). Wordt live geladen; zichtbaar vanaf zoomniveau 14. De dekking is niet overal volledig. © de respectieve archieven, alleen voor persoonlijke raadpleging. Meer info en foto-details: <a href="https://www.luchtfoto1914-1918.be/nl/geoportaal" target="_blank" rel="noopener">luchtfoto1914-1918.be</a>.</li>
    <li><b>Loopgraven uit luchtfotokartering</b>: Gheyle, W., Verdegem, S. &amp; Stichelbaut, B. (2021), <i>Dataset archeologisch syntheseonderzoek loopgraven Eerste Wereldoorlog in Vlaanderen</i> (UGent / Onroerend Erfgoed), Zenodo <a href="https://zenodo.org/records/4740452" target="_blank" rel="noopener">10.5281/zenodo.4740452</a>, licentie <b>CC BY 4.0</b>. 773 loopgraafsegmenten bij archeologisch onderzochte sites (dus geen volledig loopgravennet). Omgezet van Lambert 72 naar WGS84.</li>
    <li><b>UNESCO-kernzones</b> (‘Funeraire en herdenkingsplaatsen van WOI, Westfront’, 2023) en <b>beschermde monumenten</b>: Agentschap Onroerend Erfgoed via de Mercator WMS (www.mercator.vlaanderen.be), <b>Gratis Open Data Licentie Vlaanderen v1.2</b>.</li>
+  </ul>
+  <h3>Lidar en overblijfselen</h3>
+  <ul>
+   <li><b>Lidar Vlaanderen</b>: Digitaal Hoogtemodel Vlaanderen II, multidirectionele hillshade 0,25 m (<i>DHMV_II_HILL_25cm</i>) en sky-view factor 0,25 m (<i>DHMV_II_SVF_25cm</i>), WMTS geo.api.vlaanderen.be/DHMV. Gemaakt door Digitaal Vlaanderen samen met Onroerend Erfgoed. Licentie: <a href="https://www.vlaanderen.be/digitaal-vlaanderen/onze-diensten-en-platformen/open-data/voorwaarden-voor-het-hergebruik-van-overheidsinformatie/modellicentie-gratis-hergebruik" target="_blank" rel="noopener">Modellicentie Gratis Hergebruik v1.0</a>, bron: Digitaal Vlaanderen (<a href="https://metadata.vlaanderen.be/srv/dut/catalog.search#/metadata/be2276f8-21fa-4e51-b4bc-c79eaf8bab81" target="_blank" rel="noopener">metadata</a>).</li>
+   <li><b>Lidar Frankrijk</b>: reliëfschaduw van het MNT LiDAR HD, © <a href="https://geoservices.ign.fr/lidarhd" target="_blank" rel="noopener">IGN</a> (Géoplateforme), <a href="https://www.etalab.gouv.fr/licence-ouverte-open-licence/" target="_blank" rel="noopener">Licence Ouverte Etalab 2.0</a>. Rond Armentières en Lille nog geen dekking (okt. 2026).</li>
+   <li>Kuilen en lijnen op de lidar zijn echt reliëf, maar niet elke kuil is een krater: ook sloten, kleiputten en drinkpoelen tekenen zich af.</li>
+   <li><b>Overblijfselen</b>: OpenStreetMap (© OpenStreetMap-bijdragers, <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">ODbL 1.0</a>), opgehaald via de Overpass API op 20-10-2026: military=bunker/shelter/blockhouse/casemate/gun_emplacement/observation_post, historic=bunker/ruins/battlefield/archaeological_site/crater/fort, bunker_type en natural=crater. Gefilterd: niets uit WO II of later (Atlantikwall aan de kust, Franse grenslinie van 1936–40, datums na 1919), geen middeleeuwse mottes, geen herdenkingsmonumenten en geen dubbels van de plekken op deze kaart. Twijfelgevallen zonder bewijs van WOI (kuststrook, Frans grensgebied) zijn weggelaten. Niet elk object is ter plaatse gecontroleerd; veel bunkers staan op privéterrein.</li>
+   <li><b>Beschermde archeologische sites</b>: Agentschap Onroerend Erfgoed via de Mercator WMS (laag <i>ps:ps_bes_arch_site</i>), Gratis Open Data Licentie Vlaanderen.</li>
   </ul>
   <h3>Achtergrondkaarten</h3>
   <ul>
@@ -227,9 +245,8 @@ function vPane(n){ return map.createPane(n, map.getPane('rotatePane')||undefined
 function mPane(n){ return map.createPane(n, map.getPane('norotatePane')||undefined); }
 if (/^#[\d.]+,[\d.]+,\d+$/.test(location.hash)) { L.circleMarker(startView[0],{radius:14,color:'#c92a2a',weight:3,fillColor:'#c92a2a',fillOpacity:.15,interactive:false}).addTo(map); }
 const zoomCtl = L.control.zoom({position:'bottomright'}).addTo(map);
-// laptop/desktop (≥ 800 px): het lagenpaneel ligt rechts over de hoek, dus zoomknoppen linksboven; telefoon: rechtsonder (ongewijzigd)
-{ const mq = matchMedia('(min-width:800px)'), f = () => zoomCtl.setPosition(mq.matches ? 'topleft' : 'bottomright');
-  mq.addEventListener ? mq.addEventListener('change', f) : mq.addListener(f); f(); }
+// op laptop/desktop ligt het lagenpaneel rechts over de hoek: zoomknoppen dan linksboven, op de telefoon rechtsonder
+const MQ_DESK = matchMedia('(min-width:800px)');
 map.attributionControl.setPrefix('<a href="https://leafletjs.com" target="_blank" rel="noopener">Leaflet</a>');
 L.control.scale({imperial:false, position:'bottomleft'}).addTo(map);
 
@@ -259,7 +276,20 @@ const wmsOpts = {format:'image/png', transparent:true, version:'1.3.0', opacity:
 const MERC = 'https://www.mercator.vlaanderen.be/raadpleegdienstenmercatorpubliek/wms';
 const unesco = L.tileLayer.wms(MERC, Object.assign({layers:'ps:ps_unesco_kern'}, wmsOpts));
 const monum = L.tileLayer.wms(MERC, Object.assign({layers:'ps:ps_bes_monument'}, wmsOpts));
-const rasterOverlays = [photos, unesco, monum];
+const archsite = L.tileLayer.wms(MERC, Object.assign({layers:'ps:ps_bes_arch_site'}, wmsOpts));
+const rasterOverlays = [photos, unesco, monum, archsite];
+
+// ---- Lidar: Vlaanderen (DHMV II, Digitaal Vlaanderen) + Frankrijk (IGN LiDAR HD); 'multiply' laat de kaart doorschemeren ----
+vPane('lidar'); map.getPane('lidar').style.zIndex = 250; map.getPane('lidar').style.mixBlendMode = 'multiply';
+const DHMV = l => 'https://geo.api.vlaanderen.be/DHMV/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=' + l + '&STYLE=&TILEMATRIXSET=GoogleMapsVL&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&FORMAT=image/png';
+const DHMV_ATT = 'Lidar Vlaanderen: DHMV II, bron: <a href="https://www.vlaanderen.be/digitaal-vlaanderen" target="_blank" rel="noopener">Digitaal Vlaanderen</a> (Modellicentie Gratis Hergebruik)';
+const lidarVl = {
+  hill: L.tileLayer(DHMV('DHMV_II_HILL_25cm'), {pane:'lidar', minZoom:11, maxZoom:20, maxNativeZoom:20, bounds:[[50.68,2.53],[51.52,5.92]], attribution:DHMV_ATT}),
+  svf:  L.tileLayer(DHMV('DHMV_II_SVF_25cm'),  {pane:'lidar', minZoom:11, maxZoom:20, maxNativeZoom:20, bounds:[[50.68,2.53],[51.52,5.92]], attribution:DHMV_ATT})
+};
+const lidarFr = L.tileLayer('https://data.geopf.fr/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=IGNF_LIDAR-HD_MNT_ELEVATION.ELEVATIONGRIDCOVERAGE.SHADOW&STYLE=normal&TILEMATRIXSET=PM_0_18&FORMAT=image/png&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}',
+  {pane:'lidar', minZoom:11, maxZoom:20, maxNativeZoom:18, bounds:[[50.60,2.35],[51.10,3.20]], attribution:'Lidar Frankrijk: © <a href="https://geoservices.ign.fr/lidarhd" target="_blank" rel="noopener">IGN LiDAR HD</a> (Etalab 2.0)'});
+let lidarMode = 'hill';
 
 // ---- front lines ----
 vPane('front'); map.getPane('front').style.zIndex = 420;
@@ -331,7 +361,7 @@ Object.entries(CATS).forEach(([k,c])=>{
 // ---- controls wiring ----
 function bindToggle(id, layer){ const el=document.getElementById(id);
   const f=()=>{ el.checked ? layer.addTo(map) : map.removeLayer(layer); }; el.onchange=f; f(); }
-bindToggle('tgPhotos', photos); bindToggle('tgTrench', trench); bindToggle('tgUnesco', unesco); bindToggle('tgMon', monum);
+bindToggle('tgArch', archsite); bindToggle('tgPhotos', photos); bindToggle('tgUnesco', unesco); bindToggle('tgMon', monum);
 document.getElementById('opacity').oninput = e => {
   document.getElementById('opv').textContent = e.target.value;
   rasterOverlays.forEach(l=>l.setOpacity(OPAC()));
@@ -352,6 +382,31 @@ function toast(msg, ms){ const t=document.getElementById('toast'); t.innerHTML=m
 const hint = L.control({position:'bottomright'});
 hint.onAdd=()=>{ const d=L.DomUtil.create('div','lf-hint'); d.id='zhint'; return d; };
 hint.addTo(map);
+{ const f = () => { const p = MQ_DESK.matches ? 'topleft' : 'bottomright'; zoomCtl.setPosition(p); hint.setPosition(p); };
+  MQ_DESK.addEventListener ? MQ_DESK.addEventListener('change', f) : MQ_DESK.addListener(f); f(); }
+
+// ---- lidar-bediening ----
+{ const tg = document.getElementById('tgLidar'), sl = document.getElementById('lidarSl');
+  const cur = () => lidarVl[lidarMode];
+  const show = on => { Object.values(lidarVl).forEach(l => map.removeLayer(l)); map.removeLayer(lidarFr);
+    if (on) { lidarFr.addTo(map); cur().addTo(map); } };
+  tg.onchange = () => { show(tg.checked); if (tg.checked && map.getZoom() < 13) map.setZoom(14); };
+  sl.oninput = () => { Object.values(lidarVl).forEach(l => l.setOpacity(sl.value / 100)); lidarFr.setOpacity(sl.value / 100); };
+  document.querySelectorAll('#lidarRow .chip').forEach(c => c.onclick = () => { lidarMode = c.dataset.l;
+    document.querySelectorAll('#lidarRow .chip').forEach(x => x.classList.toggle('on', x === c));
+    if (!tg.checked) tg.checked = true; show(true); });
+  lidarFr.on('tileerror', e => { e.tile.style.visibility = 'hidden'; });
+  window.showLidar = () => { if (!tg.checked) { tg.checked = true; show(true); } if (map.getZoom() < 16) map.setZoom(16); };
+  if (/(^#|&)svf\b/.test(location.hash)) { lidarMode = 'svf'; document.querySelectorAll('#lidarRow .chip').forEach(x => x.classList.toggle('on', x.dataset.l === 'svf')); }
+  if (/(^#|&)(lidar|svf)\b/.test(location.hash)) { tg.checked = true; show(true); } }
+
+// ---- overblijfselen (OSM, ODbL) ----
+mPane('remM'); map.getPane('remM').style.zIndex = 590;
+REMAINS.init(map, {url:'overblijfselen.json', toggle:'tgRem', legend:'remLeg', pane:'remM'});
+// loopgraven: uitgezoomd één icoon per plek, vanaf zoom 15 de vlakken zelf
+mPane('trM'); map.getPane('trM').style.zIndex = 585;
+REMAINS.trenches(map, {layer:trench, toggle:'tgTrench', showAt:15, legend:'trLeg', pane:'trM', sites:POIS,
+  src:'Kartering uit WOI-luchtfoto’s: Gheyle, Verdegem &amp; Stichelbaut (2021), UGent / Onroerend Erfgoed, CC BY 4.0'});
 function updHint(){ const on=document.getElementById('tgPhotos').checked && map.getZoom()<14;
   const d=document.getElementById('zhint'); d.style.display=on?'block':'none'; d.textContent='🔍 Zoom verder in voor WOI-luchtfoto’s'; }
 map.on('zoomend', updHint); document.getElementById('tgPhotos').addEventListener('change', updHint); updHint();
